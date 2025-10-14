@@ -1,0 +1,65 @@
+@extends('layout.app')
+
+@section('content')
+<div class="shadow mb-4 w-full p-md-5">
+    <div class="container">
+        <div class="row">
+            <div class="col mr-0">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1 class="display-6">TBDOTS Cases</h1>
+                    <a href="{{ route('admin.tbdots.create') }}" class="btn btn-primary btn-sm">
+                        Add Case
+                    </a>
+                </div>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <div class="d-flex align-items-center">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <strong>Total:</strong>
+                        </div>
+                        <div class="h5 ms-1 mb-1.5 font-weight-bold text-gray-800" id="tbdotsCount">
+                            {{ $tbdots->count() }}
+                        </div>
+                    </div>
+                    <x-searchBar placeholder="Search TBDOTS cases..." />
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="table table-responsive">
+                    <table class="table table-hover" id="tbdotsTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr class="table-light">
+                                <th>Patient Name</th>
+                                <th>Date of Diagnosis</th>
+                                <th>Type of TB</th>
+                                <th>Lab Result</th>
+                                <th>Treatment Phase</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($tbdots as $case)
+                                <tr>
+                                    <td>{{ $case->patient->name }}</td>
+                                    <td>{{ $case->date_of_diagnosis }}</td>
+                                    <td>{{ ucfirst($case->tb_type) }}</td>
+                                    <td>{{ $case->lab_result }}</td>
+                                    <td>{{ ucfirst($case->treatment_phase) }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.tbdots.show', $case->id) }}" class="btn btn-info btn-sm">View</a>
+                                        <a href="{{ route('admin.tbdots.edit', $case->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">No TBDOTS cases found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
