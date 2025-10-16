@@ -9,10 +9,6 @@
                     <div>
                         <a href="{{ route('admin.patient.edit', $patient->id) }}" class="btn btn-primary"><i
                                 class="fas fa-edit me-2"></i>Edit</a>
-                        <!-- Delete Button with Form -->
-                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $patient->id }}">
-                            <i class="fas fa-trash"></i>
-                        </button>
                         </form>
                     </div>
                 </div>

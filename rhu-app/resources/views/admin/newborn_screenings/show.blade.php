@@ -4,12 +4,13 @@
     <div class="container my-5">
         <div class="card shadow">
             <div class="card-body p-4">
-                <h3 class="text-center mb-4">Newborn Screening Details</h3>
-
-                <div class="position-absolute top-0 end-0 mt-4 me-4">
-                    <a href="{{ route('admin.newborn_screenings.index') }}" class="text-dark" style="font-size: 1.25rem;">
-                        <i class="fas fa-arrow-left"></i>
-                    </a>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h3 class="mb-0"><i class="bx bxs-baby-carriage me-2"></i>Newborn Screening Details</h3>
+                    <div>
+                        <a href="{{ route('admin.newborn_screenings.index') }}" class="text-dark" style="font-size: 1.25rem;">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="d-flex align-items-center justify-content-between mb-3">
@@ -19,39 +20,6 @@
                             class="btn btn-outline-warning btn-sm">
                             <i class="fas fa-edit"></i>
                         </a>
-
-                        <form action="{{ route('admin.newborn_screenings.destroy', $newborn_screening->id) }}"
-                            method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ $newborn_screening->id }}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="deleteModal{{ $newborn_screening->id }}" tabindex="-1"
-                                aria-labelledby="deleteModalLabel{{ $newborn_screening->id }}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ $newborn_screening->id }}">
-                                                Confirm Deletion</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete this data?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
                     </div>
                 </div>
 

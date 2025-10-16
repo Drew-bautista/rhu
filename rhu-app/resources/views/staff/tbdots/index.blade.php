@@ -7,7 +7,7 @@
             <div class="col mr-0">
                 <div class="d-flex align-items-center justify-content-between">
                     <h1 class="display-6">TBDOTS Cases</h1>
-                    <a href="{{ route('admin.tbdots.create') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('staff.tbdots.create') }}" class="btn btn-primary btn-sm">
                         Add Case
                     </a>
                 </div>
@@ -40,14 +40,14 @@
                         <tbody>
                             @forelse($tbdots as $case)
                                 <tr>
-                                    <td>{{ $case->patient ? $case->patient->name : 'N/A' }}</td>
-                                    <td>{{ $case->date_of_diagnosis }}</td>
-                                    <td>{{ ucfirst($case->tb_type) }}</td>
-                                    <td>{{ $case->lab_result }}</td>
-                                    <td>{{ ucfirst($case->treatment_phase) }}</td>
+                                    <td>{{ $case->patient_name }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($case->date_of_diagnosis)->format('Y/m/d') }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $case->tb_type)) }}</td>
+                                    <td>{{ $case->lab_result ?? '-' }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $case->treatment_category)) }}</td>
                                     <td>
-                                        <a href="{{ route('admin.tbdots.show', $case->id) }}" class="btn btn-info btn-sm">View</a>
-                                        <a href="{{ route('admin.tbdots.edit', $case->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="{{ route('staff.tbdots.show', $case->id) }}" class="btn btn-info btn-sm">View</a>
+                                        <a href="{{ route('staff.tbdots.edit', $case->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                     </td>
                                 </tr>
                             @empty

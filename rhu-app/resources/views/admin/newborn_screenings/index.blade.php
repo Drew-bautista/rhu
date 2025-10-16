@@ -67,7 +67,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center">No urinalysis results found.</td>
+                                        <td colspan="6" class="text-center">No newborn screening records found.</td>
                                     </tr>
                                 @endforelse
 

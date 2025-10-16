@@ -41,7 +41,7 @@
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" name="name" id="name" class="form-control"
-                                    placeholder="John Doe" value="{{ old('name', $dentalRecords->appointments->name) }}"
+                                    placeholder="John Doe" value="{{ old('name', $dentalRecords->appointments ? $dentalRecords->appointments->name : 'N/A') }}"
                                     readonly>
                             </div>
                         </div>

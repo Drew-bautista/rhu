@@ -293,6 +293,7 @@
 
     <div class="container">
         @if ($role === 'doctor')
+            {{-- Doctor Menu - Based on Image 1 --}}
             <div class="mt-3">
                 <div class="dropdownSmsprofile">
                     <a class="dropdown-btn" href="{{ route('doctor.index') }}" style="text-decoration: none;">
@@ -305,73 +306,71 @@
                         <i class='bx bx-calendar'></i> Monthly Appointments
                     </a>
                 </div>
-                {{-- Inventory Management --}}
-                <div class="dropdownSmsprofile">
-                    <a class="dropdown-btn" href="{{ route('admin.inventory.index') }}" style="text-decoration: none;">
-                        <i class='bx bx-package'></i> Inventory Management
-                    </a>
-                </div>
                 
-                {{-- Report Generation --}}
-                <div class="dropdownSmsprofile">
-                    <a class="dropdown-btn" href="{{ route('admin.reports.index') }}" style="text-decoration: none;">
-                        <i class='bx bx-file'></i> Report Generation
-                    </a>
-                </div>
+                {{-- Infirmary Dropdown --}}
                 <div class="dropdownSmsprofile">
                     <button class="dropdown-btn" onclick="toggleDropdown(this)">
-                        <i class='bx bx-user'></i> Services Offered<i class="fa fa-caret-down" style="float: right;"></i>
+                        <i class='bx bx-plus-medical'></i> Infirmary <i class="fa fa-caret-down" style="float: right;"></i>
                     </button>
                     <div class="dropdown-container">
                         <a class="dropdown-btn" href="{{ route('admin.infirmary.index') }}">
                             <i class='bx bx-heart'></i> Health Assessment
                         </a>
-                        <a class="dropdown-btn " href="{{ route('admin.dental-record.index') }}">
-                            <i class='bxr bx-tooth'></i> Dental Assessment
+                        <a class="dropdown-btn" href="{{ route('admin.dental-record.index') }}">
+                            <i class='bx bx-tooth'></i> Dental Assessment
                         </a>
-                        <a class="dropdown-btn " href="{{ route('admin.animal-bite.index') }}">
-                            <i class="bxr bx-dog"></i> Animal Bite
+                        <a class="dropdown-btn" href="{{ route('admin.animal-bite.index') }}">
+                            <i class='bx bxs-dog'></i> Animal Bite
                         </a>
-                        <a class="dropdown-btn " href="{{ route('admin.tbdots.index') }}">
+                        <a class="dropdown-btn" href="{{ route('admin.tbdots.index') }}">
                             <i class='bx bx-plus-medical'></i> TB-DOTS
                         </a>
-                        <a class="dropdown-btn " href="{{ route('admin.vaccines.index') }}">
-                            <i class='bx bx-injection'></i> Vaccines
+                        <a class="dropdown-btn" href="{{ route('admin.vaccines.index') }}">
+                            <i class='bx bx-health'></i> Vaccines
                         </a>
                     </div>
                 </div>
 
-
+                {{-- Maternal & Child Health Dropdown --}}
                 <div class="dropdownSmsprofile">
                     <button class="dropdown-btn" onclick="toggleDropdown(this)">
-                        <i class='bx bx-user'></i> Maternal & Child Health<i class="fa fa-caret-down" style="float: right;"></i>
+                        <i class='bx bx-child'></i> Maternal & Child Health <i class="fa fa-caret-down" style="float: right;"></i>
                     </button>
                     <div class="dropdown-container">
-
-                        <a class="dropdown-btn" href="{{ route('admin.prenatal-record.index') }}">Prenatal Record</a>
-                        <a class="dropdown-btn" href="{{ route('admin.newborn_screenings.index') }}">Newborn
-                            Screening</a>
-                        <a class="dropdown-btn" href="{{ route('admin.family-planning.index') }}">Family Planning</a>
+                        <a class="dropdown-btn" href="{{ route('admin.prenatal-record.index') }}">
+                            <i class='bx bx-female'></i> Prenatal Record
+                        </a>
+                        <a class="dropdown-btn" href="{{ route('admin.newborn_screenings.index') }}">
+                            <i class='bx bxs-baby-carriage'></i> Newborn Screening
+                        </a>
+                        <a class="dropdown-btn" href="{{ route('admin.family-planning.index') }}">
+                            <i class='bx bx-heart-circle'></i> Family Planning
+                        </a>
                     </div>
                 </div>
-                {{-- Laboratory --}}
+                
+                {{-- Laboratory Dropdown --}}
                 <div class="dropdownSmsprofile">
                     <button class="dropdown-btn" onclick="toggleDropdown(this)">
-                        <i class='bx bx-test-tube'></i> Laboratory <i class="fa fa-caret-down"
-                            style="float: right;"></i>
+                        <i class='bx bx-test-tube'></i> Laboratory <i class="fa fa-caret-down" style="float: right;"></i>
                     </button>
                     <div class="dropdown-container">
-
-                        <a class="dropdown-btn" href="{{ route('admin.cbc-results.index') }}">CBC</a>
-                        <a class="dropdown-btn" href="{{ route('admin.urinalysis-results.index') }}">Urinalysis</a>
+                        <a class="dropdown-btn" href="{{ route('admin.cbc-results.index') }}">
+                            <i class='bx bx-vial'></i> CBC
+                        </a>
+                        <a class="dropdown-btn" href="{{ route('admin.urinalysis-results.index') }}">
+                            <i class='bx bx-test-tube'></i> Urinalysis
+                        </a>
                     </div>
                 </div>
             </div>
         @elseif ($role === 'staff')
+            {{-- Staff Menu - Based on Image 2 --}}
             <div class="mt-3">
                 <div class="dropdownSmsprofile">
-                    <a class="dropdown-btn" href="{{ route('staff.index') }}" style="text-decoration: none;"><i
-                            class='bx bx-grid-alt'></i> Dashboard</a>
+                    <a class="dropdown-btn" href="{{ route('staff.index') }}" style="text-decoration: none;">
+                        <i class='bx bx-grid-alt'></i> Dashboard
+                    </a>
                 </div>
 
                 <div class="dropdownSmsprofile">
@@ -379,23 +378,46 @@
                         <i class='bx bx-calendar'></i> Monthly Appointments
                     </a>
                 </div>
+                
+                {{-- Inventory Management --}}
+                <div class="dropdownSmsprofile">
+                    <a class="dropdown-btn" href="{{ route('staff.inventory.index') }}" style="text-decoration: none;">
+                        <i class='bx bx-package'></i> Inventory Management
+                    </a>
+                </div>
+                
+                {{-- Report Generation --}}
+                <div class="dropdownSmsprofile">
+                    <a class="dropdown-btn" href="{{ route('staff.reports.index') }}" style="text-decoration: none;">
+                        <i class='bx bx-file'></i> Report Generation
+                    </a>
+                </div>
+                
+                {{-- Services Offered Dropdown --}}
                 <div class="dropdownSmsprofile">
                     <button class="dropdown-btn" onclick="toggleDropdown(this)">
-                        <i class='bx bx-plus-medical'></i> Infirmary <i class="fa fa-caret-down" style="float: right;"></i>
+                        <i class='bx bx-user'></i> Services Offered <i class="fa fa-caret-down" style="float: right;"></i>
                     </button>
                     <div class="dropdown-container">
                         <a class="dropdown-btn" href="{{ route('staff.infirmary.index') }}">
                             <i class='bx bx-heart'></i> Health Assessment
                         </a>
                         <a class="dropdown-btn" href="{{ route('staff.dental-record.index') }}">
-                            <i class='bx bx-tooth'></i> Dental Assessment
+                            <i class='bx bxs-tooth'></i> Dental Assessment
                         </a>
-                        <a class="dropdown-btn" href="">
-                            <i class='bx bx-injection'></i> Animal Bite
+                        <a class="dropdown-btn" href="{{ route('staff.animal-bite.index') }}">
+                            <i class='bx bxs-dog'></i> Animal Bite
+                        </a>
+                        <a class="dropdown-btn" href="{{ route('staff.tbdots.index') }}">
+                            <i class='bx bx-plus-circle'></i> TB-DOTS
+                        </a>
+                        <a class="dropdown-btn" href="{{ route('staff.vaccines.index') }}">
+                            <i class='bx bx-health'></i> Vaccines
                         </a>
                     </div>
                 </div>
 
+                {{-- Maternal & Child Health Dropdown --}}
                 <div class="dropdownSmsprofile">
                     <button class="dropdown-btn" onclick="toggleDropdown(this)">
                         <i class='bx bx-child'></i> Maternal & Child Health <i class="fa fa-caret-down" style="float: right;"></i>
@@ -405,13 +427,14 @@
                             <i class='bx bx-female'></i> Prenatal Record
                         </a>
                         <a class="dropdown-btn" href="{{ route('staff.newborn_screenings.index') }}">
-                            <i class='bx bx-baby-carriage'></i> Newborn Screening
+                            <i class='bx bxs-baby-carriage'></i> Newborn Screening
                         </a>
                         <a class="dropdown-btn" href="{{ route('staff.family-planning.index') }}">
-                            <i class='bx bx-group'></i> Family Planning
+                            <i class='bx bx-heart-circle'></i> Family Planning
                         </a>
                     </div>
                 </div>
+                
                 {{-- Laboratory --}}
                 <div class="dropdownSmsprofile">
                     <button class="dropdown-btn" onclick="toggleDropdown(this)">
@@ -422,11 +445,10 @@
                             <i class='bx bx-vial'></i> CBC
                         </a>
                         <a class="dropdown-btn" href="{{ route('staff.urinalysis-results.index') }}">
-                            <i class='bx bx-droplet'></i> Urinalysis
+                            <i class='bx bx-test-tube'></i> Urinalysis
                         </a>
                     </div>
                 </div>
-
             </div>
 
             {{-- NURSE --}}
@@ -476,7 +498,7 @@
                             <i class='bx bx-droplet'></i> Urinalysis
                         </a>
                         <a class="dropdown-btn" href="{{ route('admin.newborn_screenings.index') }}">
-                            <i class='bx bx-baby-carriage'></i> Newborn Screening
+                            <i class='bx bxs-baby-carriage'></i> Newborn Screening
                         </a>
                     </div>
                 </div>

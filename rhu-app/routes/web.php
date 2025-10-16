@@ -15,6 +15,7 @@ use App\Http\Controllers\Doctor\NewbornScreeningController;
 use App\Http\Controllers\Doctor\UrinalysisController;
 use App\Http\Controllers\Staff\StaffAppointmentController;
 use App\Http\Controllers\Staff\StaffCbcResultController;
+use App\Http\Controllers\Staff\StaffAnimalBiteController;
 use App\Http\Controllers\Staff\StaffDashboardController;
 use App\Http\Controllers\Staff\StaffDentalController;
 use App\Http\Controllers\Staff\StaffFamilyPlanningController;
@@ -24,7 +25,10 @@ use App\Http\Controllers\Staff\StaffInfirmaryController;
 use App\Http\Controllers\Staff\StaffNewbornScreeningController;
 use App\Http\Controllers\Staff\StaffPatientController;
 use App\Http\Controllers\Staff\StaffPrenatalController;
+use App\Http\Controllers\Staff\StaffTbdotController;
 use App\Http\Controllers\Staff\StaffUrinalysisController;
+use App\Http\Controllers\Staff\StaffVaccineController;
+use App\Http\Controllers\Staff\StaffReportController;
 use App\Http\Middleware\Staff;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
@@ -218,9 +222,53 @@ Route::middleware('auth')->group(function () {
 
 
     // Staff routes
-    Route::middleware(Staff::class)->group(function () {});
-    //Dashboard routes
-    Route::get('/staff-dashboard', [StaffDashboardController::class, 'index'])->name('staff.index');
+    Route::middleware(Staff::class)->group(function () {
+        //Dashboard routes
+        Route::get('/staff-dashboard', [StaffDashboardController::class, 'index'])->name('staff.index');
+        
+        // Report Generation for Staff
+        Route::get('/staff/reports', [StaffReportController::class, 'index'])->name('staff.reports.index');
+        Route::get('/staff/reports/patient/{patientName}', [StaffReportController::class, 'patientHistory'])->name('staff.reports.patient-history');
+        Route::get('/staff/reports/monthly/{month}/{year}', [StaffReportController::class, 'generateMonthlyReport'])->name('staff.reports.monthly');
+        Route::get('/staff/reports/export', [StaffReportController::class, 'exportReport'])->name('staff.reports.export');
+        
+        // Inventory Management for Staff
+        Route::get('/staff/inventory', [InventoryController::class, 'index'])->name('staff.inventory.index');
+        Route::get('/staff/inventory/create', [InventoryController::class, 'create'])->name('staff.inventory.create');
+        Route::post('/staff/inventory/store', [InventoryController::class, 'store'])->name('staff.inventory.store');
+        Route::get('/staff/inventory/{inventory}', [InventoryController::class, 'show'])->name('staff.inventory.show');
+        Route::get('/staff/inventory/{inventory}/edit', [InventoryController::class, 'edit'])->name('staff.inventory.edit');
+        Route::put('/staff/inventory/{inventory}', [InventoryController::class, 'update'])->name('staff.inventory.update');
+        Route::delete('/staff/inventory/{inventory}', [InventoryController::class, 'destroy'])->name('staff.inventory.destroy');
+        Route::post('/staff/inventory/prescribe', [InventoryController::class, 'prescribe'])->name('staff.inventory.prescribe');
+        
+        // Animal Bite Management for Staff
+        Route::get('/staff/animal-bite', [StaffAnimalBiteController::class, 'index'])->name('staff.animal-bite.index');
+        Route::get('/staff/animal-bite/create', [StaffAnimalBiteController::class, 'create'])->name('staff.animal-bite.create');
+        Route::post('/staff/animal-bite/store', [StaffAnimalBiteController::class, 'store'])->name('staff.animal-bite.store');
+        Route::get('/staff/animal-bite/{animalBiteCase}', [StaffAnimalBiteController::class, 'show'])->name('staff.animal-bite.show');
+        Route::get('/staff/animal-bite/{animalBiteCase}/edit', [StaffAnimalBiteController::class, 'edit'])->name('staff.animal-bite.edit');
+        Route::put('/staff/animal-bite/{animalBiteCase}', [StaffAnimalBiteController::class, 'update'])->name('staff.animal-bite.update');
+        Route::delete('/staff/animal-bite/{animalBiteCase}', [StaffAnimalBiteController::class, 'destroy'])->name('staff.animal-bite.destroy');
+
+        // TB-DOTS Management for Staff
+        Route::get('/staff/tbdots', [StaffTbdotController::class, 'index'])->name('staff.tbdots.index');
+        Route::get('/staff/tbdots/create', [StaffTbdotController::class, 'create'])->name('staff.tbdots.create');
+        Route::post('/staff/tbdots/store', [StaffTbdotController::class, 'store'])->name('staff.tbdots.store');
+        Route::get('/staff/tbdots/{tbdot}', [StaffTbdotController::class, 'show'])->name('staff.tbdots.show');
+        Route::get('/staff/tbdots/{tbdot}/edit', [StaffTbdotController::class, 'edit'])->name('staff.tbdots.edit');
+        Route::put('/staff/tbdots/{tbdot}', [StaffTbdotController::class, 'update'])->name('staff.tbdots.update');
+        Route::delete('/staff/tbdots/{tbdot}', [StaffTbdotController::class, 'destroy'])->name('staff.tbdots.destroy');
+
+        // Vaccine Management for Staff
+        Route::get('/staff/vaccines', [StaffVaccineController::class, 'index'])->name('staff.vaccines.index');
+        Route::get('/staff/vaccines/create', [StaffVaccineController::class, 'create'])->name('staff.vaccines.create');
+        Route::post('/staff/vaccines/store', [StaffVaccineController::class, 'store'])->name('staff.vaccines.store');
+        Route::get('/staff/vaccines/{vaccine}', [StaffVaccineController::class, 'show'])->name('staff.vaccines.show');
+        Route::get('/staff/vaccines/{vaccine}/edit', [StaffVaccineController::class, 'edit'])->name('staff.vaccines.edit');
+        Route::put('/staff/vaccines/{vaccine}', [StaffVaccineController::class, 'update'])->name('staff.vaccines.update');
+        Route::delete('/staff/vaccines/{vaccine}', [StaffVaccineController::class, 'destroy'])->name('staff.vaccines.destroy');
+    });
 
     //Appointment management routes
     Route::get('/staff/appointments', [StaffAppointmentController::class, 'index'])->name('staff.appointments.index');

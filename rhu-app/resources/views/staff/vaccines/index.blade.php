@@ -7,7 +7,7 @@
                 <div class="col mr-0">
                     <div class="d-flex align-items-center justify-content-between">
                         <h1 class="display-6">Vaccine Records</h1>
-                        <a href="{{ route('admin.vaccines.create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('staff.vaccines.create') }}" class="btn btn-primary btn-sm">
                             Add Vaccine Record
                         </a>
                     </div>
@@ -61,11 +61,11 @@
                                 </td>
                                 <td>{{ $vaccine->administered_by }}</td>
                                 <td>
-                                    <a href="{{ route('admin.vaccines.show', $vaccine->id) }}" 
+                                    <a href="{{ route('staff.vaccines.show', $vaccine->id) }}" 
                                        class="btn btn-info btn-sm" title="View">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.vaccines.edit', $vaccine->id) }}" 
+                                    <a href="{{ route('staff.vaccines.edit', $vaccine->id) }}" 
                                        class="btn btn-warning btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -83,9 +83,9 @@
     </div>
 @endsection
 
+@push('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // Client-side search filtering for Vaccine Records
     $(document).ready(function () {
         const $input = $('#searchInput');
         const $tbody = $('#vaccineTableBody');
@@ -101,3 +101,4 @@
         }
     });
 </script>
+@endpush
