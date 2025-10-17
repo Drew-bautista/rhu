@@ -11,14 +11,19 @@ class StaffTbdotController extends Controller
 {
     public function index()
     {
-        $tbdots = Tbdot::with('appointment')->latest()->get();
-        return view('staff.TBDots.index', compact('tbdots'));
+        try {
+            $tbdots = Tbdot::latest()->get();
+            return view('staff.tbdots.index', compact('tbdots'));
+        } catch (\Exception $e) {
+            \Log::error('TB-DOTS Index Error: ' . $e->getMessage());
+            return view('staff.tbdots.index', ['tbdots' => collect()]);
+        }
     }
 
     public function create()
     {
         $appointments = Appointment::where('status', 'pending')->get();
-        return view('staff.TBDots.create', compact('appointments'));
+        return view('staff.tbdots.create', compact('appointments'));
     }
 
     public function store(Request $request)
@@ -48,13 +53,13 @@ class StaffTbdotController extends Controller
 
     public function show(Tbdot $tbdot)
     {
-        return view('staff.TBDots.show', compact('tbdot'));
+        return view('staff.tbdots.show', compact('tbdot'));
     }
 
     public function edit(Tbdot $tbdot)
     {
         $appointments = Appointment::all();
-        return view('staff.TBDots.edit', compact('tbdot', 'appointments'));
+        return view('staff.tbdots.edit', compact('tbdot', 'appointments'));
     }
 
     public function update(Request $request, Tbdot $tbdot)

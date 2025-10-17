@@ -32,7 +32,7 @@
                                 <th>Patient Name</th>
                                 <th>Date of Diagnosis</th>
                                 <th>Type of TB</th>
-                                <th>Lab Result</th>
+                                <th>Treatment Status</th>
                                 <th>Treatment Phase</th>
                                 <th>Actions</th>
                             </tr>
@@ -43,7 +43,7 @@
                                     <td>{{ $case->patient_name }}</td>
                                     <td>{{ \Carbon\Carbon::parse($case->date_of_diagnosis)->format('Y/m/d') }}</td>
                                     <td>{{ ucfirst(str_replace('_', ' ', $case->tb_type)) }}</td>
-                                    <td>{{ $case->lab_result ?? '-' }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $case->treatment_status)) }}</td>
                                     <td>{{ ucfirst(str_replace('_', ' ', $case->treatment_category)) }}</td>
                                     <td>
                                         <a href="{{ route('staff.tbdots.show', $case->id) }}" class="btn btn-info btn-sm">View</a>
