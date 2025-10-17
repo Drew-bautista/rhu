@@ -28,6 +28,7 @@ use App\Http\Controllers\Staff\StaffPrenatalController;
 use App\Http\Controllers\Staff\StaffTbdotController;
 use App\Http\Controllers\Staff\StaffUrinalysisController;
 use App\Http\Controllers\Staff\StaffVaccineController;
+use App\Http\Controllers\Staff\StaffInventoryController;
 use App\Http\Controllers\Staff\StaffReportController;
 use App\Http\Middleware\Staff;
 use Illuminate\Support\Facades\Route;
@@ -233,14 +234,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/staff/reports/export', [StaffReportController::class, 'exportReport'])->name('staff.reports.export');
         
         // Inventory Management for Staff
-        Route::get('/staff/inventory', [InventoryController::class, 'index'])->name('staff.inventory.index');
-        Route::get('/staff/inventory/create', [InventoryController::class, 'create'])->name('staff.inventory.create');
-        Route::post('/staff/inventory/store', [InventoryController::class, 'store'])->name('staff.inventory.store');
-        Route::get('/staff/inventory/{inventory}', [InventoryController::class, 'show'])->name('staff.inventory.show');
-        Route::get('/staff/inventory/{inventory}/edit', [InventoryController::class, 'edit'])->name('staff.inventory.edit');
-        Route::put('/staff/inventory/{inventory}', [InventoryController::class, 'update'])->name('staff.inventory.update');
-        Route::delete('/staff/inventory/{inventory}', [InventoryController::class, 'destroy'])->name('staff.inventory.destroy');
-        Route::post('/staff/inventory/prescribe', [InventoryController::class, 'prescribe'])->name('staff.inventory.prescribe');
+        Route::get('/staff/inventory', [StaffInventoryController::class, 'index'])->name('staff.inventory.index');
+        Route::get('/staff/inventory/create', [StaffInventoryController::class, 'create'])->name('staff.inventory.create');
+        Route::post('/staff/inventory/store', [StaffInventoryController::class, 'store'])->name('staff.inventory.store');
+        Route::get('/staff/inventory/{inventory}', [StaffInventoryController::class, 'show'])->name('staff.inventory.show');
+        Route::get('/staff/inventory/{inventory}/edit', [StaffInventoryController::class, 'edit'])->name('staff.inventory.edit');
+        Route::put('/staff/inventory/{inventory}', [StaffInventoryController::class, 'update'])->name('staff.inventory.update');
+        Route::delete('/staff/inventory/{inventory}', [StaffInventoryController::class, 'destroy'])->name('staff.inventory.destroy');
+        Route::post('/staff/inventory/prescribe', [StaffInventoryController::class, 'prescribe'])->name('staff.inventory.prescribe');
         
         // Animal Bite Management for Staff
         Route::get('/staff/animal-bite', [StaffAnimalBiteController::class, 'index'])->name('staff.animal-bite.index');
