@@ -28,7 +28,7 @@ class RegisterController extends Controller
             'birthdate' => 'required|date|before:today',
             'sex' => 'required|in:male,female,other',
             'contact_no' => 'required|string|max:20',
-            'emergency_contact' => 'required|string|max:20',
+            'emergency_contact' => 'required|digits:11',
             'address' => 'required|string|max:500',
         ]);
 

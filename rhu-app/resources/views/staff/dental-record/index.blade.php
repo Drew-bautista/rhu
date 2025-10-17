@@ -7,7 +7,9 @@
                 <div class="col mr-0">
                     <div class="d-flex align-items-center justify-content-between">
                         <h1 class="display-6 ">Dental Records</h1>
-
+                        <a href="{{ route('staff.dental-record.create') }}" class="btn btn-primary btn-sm">
+                            Add Data
+                        </a>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
@@ -77,48 +79,28 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // Search functionality for appointments
+    // Client-side search functionality for dental records
     $(document).ready(function() {
         $('#searchInput').on('keyup', function() {
-            let query = $(this).val();
+            let query = $(this).val().toLowerCase().trim();
+            let visibleRows = 0;
 
-            $.ajax({
-                url: "/appointments/search",
-                type: 'GET',
-                data: {
-                    search: query
-                },
-                success: function(data) {
-                    let tableBody = $('#appointmentTableBody');
-                    let appointmentCount = $('#appointmentCount');
-                    tableBody.empty();
-
-                    if (data.length > 0) {
-                        $.each(data, function(index, appointment) {
-                            let row = `<tr>
-                                    <td>${appointment.patient.firstname} ${appointment.patient.lastname}</td>
-                                    <td>${appointment.appointment_date}</td>
-                                    <td>${appointment.appointment_time}</td>
-                                    <td>${appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}</td>
-                                    <td>
-                                        <a href="/appointments/${appointment.id}" class="btn btn-primary btn-sm">View</a>
-                                        <a href="/appointments/${appointment.id}/edit" class="btn btn-secondary btn-sm">Edit</a>
-                                    </td>
-                                </tr>`;
-                            tableBody.append(row);
-                        });
-                        appointmentCount.text(data.length);
-                    } else {
-                        tableBody.append(
-                            '<tr><td colspan="5" class="text-center text-muted">No appointments found.</td></tr>'
-                        );
-                        appointmentCount.text('0');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
+            $('#appointmentTable tbody tr').each(function() {
+                let row = $(this);
+                let text = row.text().toLowerCase();
+                
+                if (text.includes(query)) {
+                    row.show();
+                    visibleRows++;
+                } else {
+                    row.hide();
                 }
             });
+
+            // Update count if there's a counter element
+            if ($('#appointmentCount').length) {
+                $('#appointmentCount').text(visibleRows);
+            }
         });
     });
 </script>

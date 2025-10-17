@@ -28,34 +28,46 @@
                             @csrf
 
                             <div class="row">
-                                {{-- 🍼 Newborn Info --}}
+                                {{-- Registry Information --}}
+                                <div class="col-md-6 mb-3">
+                                    <label>Registry No.</label>
+                                    <input type="text" name="registry_no" class="form-control"
+                                        value="{{ old('registry_no') }}" placeholder="Registry Number">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>Province</label>
+                                    <input type="text" name="province" class="form-control"
+                                        value="{{ old('province') }}" placeholder="Nueva Ecija">
+                                </div>
+                                
+                                {{-- 🍼 Child Information --}}
+                                <div class="col-md-12"><h5 class="text-primary mt-3">CHILD</h5><hr></div>
                                 <div class="col-md-4 mb-3">
-                                    <label>First Name</label>
+                                    <label>1. NAME (First)</label>
                                     <input type="text" name="first_name" class="form-control"
                                         value="{{ old('first_name') }}" required>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label>Middle Name</label>
+                                    <label>(Middle)</label>
                                     <input type="text" name="middle_name" class="form-control"
                                         value="{{ old('middle_name') }}">
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label>Last Name</label>
+                                    <label>(Last)</label>
                                     <input type="text" name="last_name" class="form-control"
                                         value="{{ old('last_name') }}" required>
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <label>Sex</label>
+                                    <label>2. SEX</label>
                                     <select name="sex" class="form-control" required>
                                         <option value="">-- Select --</option>
                                         <option value="Male" {{ old('sex') == 'Male' ? 'selected' : '' }}>Male</option>
-                                        <option value="Female" {{ old('sex') == 'Female' ? 'selected' : '' }}>Female
-                                        </option>
+                                        <option value="Female" {{ old('sex') == 'Female' ? 'selected' : '' }}>Female</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label>Date of Birth</label>
+                                    <label>3. DATE OF BIRTH (day) (month) (year)</label>
                                     <input type="date" name="date_of_birth" class="form-control"
                                         value="{{ old('date_of_birth') }}" required>
                                 </div>
@@ -65,41 +77,155 @@
                                         value="{{ old('time_of_birth') }}">
                                 </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label>Birth Weight (kg)</label>
-                                    <input type="number" step="0.01" name="birth_weight" class="form-control"
-                                        value="{{ old('birth_weight') }}">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label>Gestational Age (weeks)</label>
-                                    <input type="number" name="gestational_age" class="form-control"
-                                        value="{{ old('gestational_age') }}">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label>Place of Birth</label>
+                                <div class="col-md-6 mb-3">
+                                    <label>4. PLACE OF BIRTH (Name of Hospital/Clinic/Institution)</label>
                                     <input type="text" name="place_of_birth" class="form-control"
-                                        value="{{ old('place_of_birth') }}">
+                                        value="{{ old('place_of_birth') }}" placeholder="Hospital/Clinic/Institution">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>City/Municipality</label>
+                                    <input type="text" name="city_municipality" class="form-control"
+                                        value="{{ old('city_municipality') }}" placeholder="Gabaldon">
                                 </div>
 
-                                {{-- 👩‍🍼 Mother Info --}}
                                 <div class="col-md-4 mb-3">
-                                    <label>Mother's Name</label>
-                                    <input type="text" name="mother_name" class="form-control"
-                                        value="{{ old('mother_name') }}" required>
+                                    <label>5a. TYPE OF BIRTH</label>
+                                    <select name="type_of_birth" class="form-control">
+                                        <option value="">-- Select --</option>
+                                        <option value="Single" {{ old('type_of_birth') == 'Single' ? 'selected' : '' }}>Single</option>
+                                        <option value="Twin" {{ old('type_of_birth') == 'Twin' ? 'selected' : '' }}>Twin</option>
+                                        <option value="Triplet" {{ old('type_of_birth') == 'Triplet' ? 'selected' : '' }}>Triplet</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>5b. IF MULTIPLE BIRTH, CHILD WAS</label>
+                                    <select name="birth_order" class="form-control">
+                                        <option value="">-- Select --</option>
+                                        <option value="First" {{ old('birth_order') == 'First' ? 'selected' : '' }}>First</option>
+                                        <option value="Second" {{ old('birth_order') == 'Second' ? 'selected' : '' }}>Second</option>
+                                        <option value="Third" {{ old('birth_order') == 'Third' ? 'selected' : '' }}>Third</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>6. WEIGHT AT BIRTH (grams)</label>
+                                    <input type="number" name="weight_at_birth_grams" class="form-control"
+                                        value="{{ old('weight_at_birth_grams') }}" placeholder="3247">
+                                </div>
+
+                                {{-- 👩‍🍼 MOTHER --}}
+                                <div class="col-md-12"><h5 class="text-primary mt-3">MOTHER</h5><hr></div>
+                                <div class="col-md-4 mb-3">
+                                    <label>6. MAIDEN NAME (First)</label>
+                                    <input type="text" name="mother_first_name" class="form-control"
+                                        value="{{ old('mother_first_name') }}" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>(Middle)</label>
+                                    <input type="text" name="mother_middle_name" class="form-control"
+                                        value="{{ old('mother_middle_name') }}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>(Last)</label>
+                                    <input type="text" name="mother_last_name" class="form-control"
+                                        value="{{ old('mother_last_name') }}" required>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label>7. CITIZENSHIP</label>
+                                    <input type="text" name="mother_citizenship" class="form-control"
+                                        value="{{ old('mother_citizenship') }}" placeholder="Filipino">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>8. RELIGION</label>
+                                    <input type="text" name="mother_religion" class="form-control"
+                                        value="{{ old('mother_religion') }}" placeholder="Roman Catholic">
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label>Mother's Age</label>
                                     <input type="number" name="mother_age" class="form-control"
                                         value="{{ old('mother_age') }}">
                                 </div>
+
                                 <div class="col-md-4 mb-3">
+                                    <label>9a. Total number of children born alive</label>
+                                    <input type="number" name="total_children_born_alive" class="form-control"
+                                        value="{{ old('total_children_born_alive') }}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>b. No. of children still living including this birth</label>
+                                    <input type="number" name="children_still_living" class="form-control"
+                                        value="{{ old('children_still_living') }}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>c. No. of children born alive but now dead</label>
+                                    <input type="number" name="children_born_dead" class="form-control"
+                                        value="{{ old('children_born_dead') }}">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label>10. OCCUPATION</label>
+                                    <input type="text" name="mother_occupation" class="form-control"
+                                        value="{{ old('mother_occupation') }}" placeholder="Housewife">
+                                </div>
+                                <div class="col-md-6 mb-3">
                                     <label>Mother's Contact</label>
                                     <input type="text" name="mother_contact" class="form-control"
                                         value="{{ old('mother_contact') }}">
                                 </div>
                                 <div class="col-md-12 mb-3">
-                                    <label>Mother's Address</label>
-                                    <textarea name="mother_address" class="form-control">{{ old('mother_address') }}</textarea>
+                                    <label>12. RESIDENCE (House No., Street, Barangay)</label>
+                                    <textarea name="mother_address" class="form-control" placeholder="South Poblacion, Gabaldon, Nueva Ecija">{{ old('mother_address') }}</textarea>
+                                </div>
+
+                                {{-- 👨‍🦱 FATHER --}}
+                                <div class="col-md-12"><h5 class="text-primary mt-3">FATHER</h5><hr></div>
+                                <div class="col-md-4 mb-3">
+                                    <label>13. NAME (First)</label>
+                                    <input type="text" name="father_first_name" class="form-control"
+                                        value="{{ old('father_first_name') }}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>(Middle)</label>
+                                    <input type="text" name="father_middle_name" class="form-control"
+                                        value="{{ old('father_middle_name') }}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>(Last)</label>
+                                    <input type="text" name="father_last_name" class="form-control"
+                                        value="{{ old('father_last_name') }}">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label>14. CITIZENSHIP</label>
+                                    <input type="text" name="father_citizenship" class="form-control"
+                                        value="{{ old('father_citizenship') }}" placeholder="Filipino">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>15. RELIGION</label>
+                                    <input type="text" name="father_religion" class="form-control"
+                                        value="{{ old('father_religion') }}" placeholder="Roman Catholic">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>17. Age at the time of this birth</label>
+                                    <input type="number" name="father_age_at_birth" class="form-control"
+                                        value="{{ old('father_age_at_birth') }}">
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label>16. OCCUPATION</label>
+                                    <input type="text" name="father_occupation" class="form-control"
+                                        value="{{ old('father_occupation') }}" placeholder="Tricycle Driver">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label>18. DATE AND PLACE OF MARRIAGE OF PARENTS</label>
+                                    <input type="date" name="parents_marriage_date" class="form-control"
+                                        value="{{ old('parents_marriage_date') }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>Place of Marriage</label>
+                                    <input type="text" name="parents_marriage_place" class="form-control"
+                                        value="{{ old('parents_marriage_place') }}" placeholder="Gabaldon, Nueva Ecija">
                                 </div>
 
                                 {{-- 🧾 Screening Details --}}

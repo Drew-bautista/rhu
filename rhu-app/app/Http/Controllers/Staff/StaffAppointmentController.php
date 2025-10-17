@@ -40,7 +40,7 @@ class StaffAppointmentController extends Controller
             'time' => 'required',
             'address' => 'required|string|max:255',
             'service' => 'required|string|max:255',
-            'emergency_contact' => 'required|string|max:20',
+            'emergency_contact' => 'required|digits:11',
             // 'status' => 'required|in:pending,completed,cancelled', // Ensure status is valid
         ]);
 
@@ -81,7 +81,7 @@ class StaffAppointmentController extends Controller
             'time' => 'required',
             'address' => 'required|string|max:255',
             'service' => 'required|string|max:255',
-            'emergency_contact' => 'required|string|max:20',
+            'emergency_contact' => 'required|digits:11',
             'status' => 'required|in:pending,completed,cancelled',
         ]);
 

@@ -83,22 +83,25 @@
     </div>
 @endsection
 
-@push('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        const $input = $('#searchInput');
-        const $tbody = $('#vaccineTableBody');
+    // Client-side search functionality for vaccine records
+    $(document).ready(function() {
+        $('#searchInput').on('keyup', function() {
+            let query = $(this).val().toLowerCase().trim();
+            let visibleRows = 0;
 
-        if ($input.length && $tbody.length) {
-            $input.on('input', function () {
-                const q = $(this).val().toLowerCase().trim();
-                $tbody.find('tr').each(function () {
-                    const text = $(this).text().toLowerCase();
-                    $(this).toggle(text.indexOf(q) !== -1);
-                });
+            $('#vaccineTableBody tr').each(function() {
+                let row = $(this);
+                let text = row.text().toLowerCase();
+                
+                if (text.includes(query)) {
+                    row.show();
+                    visibleRows++;
+                } else {
+                    row.hide();
+                }
             });
-        }
+        });
     });
 </script>
-@endpush

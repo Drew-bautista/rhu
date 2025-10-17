@@ -15,40 +15,6 @@
                     <div>
                         <a href="{{ route('admin.appointments.edit', $appointment->id) }}" class="btn btn-primary"><i
                                 class="fas fa-edit me-2"></i>Edit</a>
-                        <!-- Delete Button with Form -->
-                        <!-- Delete Button -->
-                        <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST"
-                            style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ $appointment->id }}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="deleteModal{{ $appointment->id }}" tabindex="-1"
-                                aria-labelledby="deleteModalLabel{{ $appointment->id }}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ $appointment->id }}">
-                                                Confirm
-                                                Deletion</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete this record?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                     </div>
                 </div>
                 <div class="card-body px-4  pb-5">

@@ -16,18 +16,18 @@
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 <strong>Total:</strong>
                             </div>
-                            <div class="h5 ms-1 mb-1.5 font-weight-bold text-gray-800" id="urinalysisCount">
+                            <div class="h5 ms-1 mb-1.5 font-weight-bold text-gray-800" id="screeningCount">
                                 {{ $screenings->count() }}
                             </div>
                         </div>
                         {{-- Search bar --}}
-                        <x-searchBar placeholder="Search urinalysis..." />
+                        <x-searchBar placeholder="Search newborn screening..." />
                     </div>
                 </div>
 
                 <div class="card-body">
                     <div class="table table-responsive">
-                        <table class="table table-hover" id="urinalysisTable" width="100%" cellspacing="0">
+                        <table class="table table-hover" id="screeningTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -74,7 +74,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center">No urinalysis results found.</td>
+                                        <td colspan="6" class="text-center">No newborn screening records found.</td>
                                     </tr>
                                 @endforelse
 
@@ -86,3 +86,31 @@
         </div>
     </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Client-side search functionality for newborn screening
+    $(document).ready(function() {
+        $('#searchInput').on('keyup', function() {
+            let query = $(this).val().toLowerCase().trim();
+            let visibleRows = 0;
+
+            $('#screeningTable tbody tr').each(function() {
+                let row = $(this);
+                let text = row.text().toLowerCase();
+                
+                if (text.includes(query)) {
+                    row.show();
+                    visibleRows++;
+                } else {
+                    row.hide();
+                }
+            });
+
+            // Update count if there's a counter element
+            if ($('#screeningCount').length) {
+                $('#screeningCount').text(visibleRows);
+            }
+        });
+    });
+</script>

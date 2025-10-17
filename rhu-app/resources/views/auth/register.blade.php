@@ -314,7 +314,9 @@
                     <div class="input-group">
                         <label for="emergency_contact">Emergency Contact <span class="required">*</span></label>
                         <input type="text" id="emergency_contact" name="emergency_contact" 
-                               value="{{ old('emergency_contact') }}" placeholder="09XXXXXXXXX" required>
+                               value="{{ old('emergency_contact') }}" pattern="[0-9]{11}" 
+                               title="Emergency contact must be exactly 11 digits" 
+                               placeholder="09XXXXXXXXX" required>
                     </div>
                 </div>
                 

@@ -63,3 +63,31 @@
     </div>
 </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Client-side search functionality for TBDOTS cases
+    $(document).ready(function() {
+        $('#searchInput').on('keyup', function() {
+            let query = $(this).val().toLowerCase().trim();
+            let visibleRows = 0;
+
+            $('#tbdotsTable tbody tr').each(function() {
+                let row = $(this);
+                let text = row.text().toLowerCase();
+                
+                if (text.includes(query)) {
+                    row.show();
+                    visibleRows++;
+                } else {
+                    row.hide();
+                }
+            });
+
+            // Update count if there's a counter element
+            if ($('#tbdotsCount').length) {
+                $('#tbdotsCount').text(visibleRows);
+            }
+        });
+    });
+</script>

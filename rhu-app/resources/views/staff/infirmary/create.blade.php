@@ -69,7 +69,8 @@
                             <div class="form-group">
                                 <label for="emergency_contact">Emergency Contact</label>
                                 <input type="text" name="emergency_contact" id="emergency_contact" class="form-control"
-                                    required>
+                                    pattern="[0-9]{11}" title="Emergency contact must be exactly 11 digits" 
+                                    placeholder="09XXXXXXXXX" required>
                             </div>
                         </div>
                     </div>

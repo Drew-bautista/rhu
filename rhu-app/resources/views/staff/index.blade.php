@@ -235,7 +235,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('admin.appointments.show', $appointment->id) }}"
+                                            <a href="{{ route('staff.appointments.show', $appointment->id) }}"
                                                 class="btn btn-info btn-sm"><i class="fas fa-eye text-white"></i></a>
 
                                             <a type="button" class=" open-modal text-decoration-none"

@@ -35,7 +35,7 @@ class StaffPatientController extends Controller
             'sex' => 'required|in:male,female',
             'birthdate' => 'required|date',
             'contact_no' => 'required|string|max:20',
-            'emergency_contact' => 'required|string|max:20',
+            'emergency_contact' => 'required|digits:11',
         ]);
         Patients::create($validatedData);
 
@@ -133,7 +133,7 @@ class StaffPatientController extends Controller
             'sex' => 'required|in:male,female,other',
             'birthdate' => 'required|date',
             'contact_no' => 'required|string|max:20',
-            'emergency_contact' => 'required|string|max:20',
+            'emergency_contact' => 'required|digits:11',
         ]);
 
         // Find the patient by ID

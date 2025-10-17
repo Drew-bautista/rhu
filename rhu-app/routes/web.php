@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/doctor/health-assessment/store', [InfirmaryController::class, 'store'])->name('admin.infirmary.store');
         Route::get('/doctor/health-assessment/{id}', [InfirmaryController::class, 'show'])->name('admin.infirmary.show');
         Route::get('/doctor/health-assessment/{id}/edit', [InfirmaryController::class, 'edit'])->name('admin.infirmary.edit');
-        Route::post('/doctor/health-assessment/{id}/update', [InfirmaryController::class, 'update'])->name('admin.infirmary.update');
+        Route::put('/doctor/health-assessment/{id}', [InfirmaryController::class, 'update'])->name('admin.infirmary.update');
         Route::delete('/doctor/health-assessment/{user}', [InfirmaryController::class, 'destroy'])->name('admin.infirmary.destroy');
 
         // Animal Bite Management
@@ -268,72 +268,75 @@ Route::middleware('auth')->group(function () {
         Route::get('/staff/vaccines/{vaccine}/edit', [StaffVaccineController::class, 'edit'])->name('staff.vaccines.edit');
         Route::put('/staff/vaccines/{vaccine}', [StaffVaccineController::class, 'update'])->name('staff.vaccines.update');
         Route::delete('/staff/vaccines/{vaccine}', [StaffVaccineController::class, 'destroy'])->name('staff.vaccines.destroy');
+
+        // Health Assessment (Infirmary) for Staff
+        Route::get('/staff/health-assessment', [StaffInfirmaryController::class, 'index'])->name('staff.infirmary.index');
+        Route::get('/staff/create-health-assessment', [StaffInfirmaryController::class, 'create'])->name('staff.infirmary.create');
+        Route::post('/staff/health-assessment/store', [StaffInfirmaryController::class, 'store'])->name('staff.infirmary.store');
+        Route::get('/staff/health-assessment/{id}', [StaffInfirmaryController::class, 'show'])->name('staff.infirmary.show');
+        Route::get('/staff/health-assessment/{id}/edit', [StaffInfirmaryController::class, 'edit'])->name('staff.infirmary.edit');
+        Route::post('/staff/health-assessment/{id}/update', [StaffInfirmaryController::class, 'update'])->name('staff.infirmary.update');
+        Route::delete('/staff/health-assessment/{user}', [StaffInfirmaryController::class, 'destroy'])->name('staff.infirmary.destroy');
+
+        // Dental Records for Staff
+        Route::get('/staff/dental-record', [StaffDentalController::class, 'index'])->name('staff.dental-record.index');
+        Route::get('/staff/dental-record/create', [StaffDentalController::class, 'create'])->name('staff.dental-record.create');
+        Route::post('/staff/dental-record/store', [StaffDentalController::class, 'store'])->name('staff.dental-record.store');
+        Route::get('/staff/dental-record/{id}', [StaffDentalController::class, 'show'])->name('staff.dental-record.show');
+        Route::get('/staff/dental-record/{id}/edit', [StaffDentalController::class, 'edit'])->name('staff.dental-record.edit');
+        Route::put('/staff/dental-record/{id}', [StaffDentalController::class, 'update'])->name('staff.dental-record.update');
+        Route::delete('/staff/dental-record/{id}', [StaffDentalController::class, 'destroy'])->name('staff.dental-record.destroy');
+
+        // Appointment Management for Staff
+        Route::get('/staff/appointments', [StaffAppointmentController::class, 'index'])->name('staff.appointments.index');
+        Route::get('/staff/appointments/create', [StaffAppointmentController::class, 'create'])->name('staff.appointments.create');
+        Route::post('/staff/appointments/store', [StaffAppointmentController::class, 'store'])->name('staff.appointments.store');
+        Route::get('/staff/appointments/{id}', [StaffAppointmentController::class, 'show'])->name('staff.appointments.show');
+        Route::get('/staff/appointments/{id}/edit', [StaffAppointmentController::class, 'edit'])->name('staff.appointments.edit');
+        Route::put('/staff/appointments/{id}', [StaffAppointmentController::class, 'update'])->name('staff.appointments.update');
+        Route::delete('/staff/appointments/{id}', [StaffAppointmentController::class, 'destroy'])->name('staff.appointments.destroy');
+
+        // Prenatal Records for Staff
+        Route::get('/staff/prenatal-record', [StaffPrenatalController::class, 'index'])->name('staff.prenatal-record.index');
+        Route::get('/staff/prenatal-record/create', [StaffPrenatalController::class, 'create'])->name('staff.prenatal-record.create');
+        Route::post('/staff/prenatal-record/store', [StaffPrenatalController::class, 'store'])->name('staff.prenatal-record.store');
+        Route::get('/staff/prenatal-record/{id}', [StaffPrenatalController::class, 'show'])->name('staff.prenatal-record.show');
+        Route::get('/staff/prenatal-record/{id}/edit', [StaffPrenatalController::class, 'edit'])->name('staff.prenatal-record.edit');
+        Route::put('/staff/prenatal-record/{id}', [StaffPrenatalController::class, 'update'])->name('staff.prenatal-record.update');
+        Route::delete('/staff/prenatal-record/{id}', [StaffPrenatalController::class, 'destroy'])->name('staff.prenatal-record.destroy');
+
+        // Family Planning for Staff
+        Route::get('/staff/family-planning', [StaffFamilyPlanningController::class, 'index'])->name('staff.family-planning.index');
+        Route::get('/staff/family-planning/create', [StaffFamilyPlanningController::class, 'create'])->name('staff.family-planning.create');
+        Route::post('/staff/family-planning/store', [StaffFamilyPlanningController::class, 'store'])->name('staff.family-planning.store');
+        Route::get('/staff/family-planning/{id}', [StaffFamilyPlanningController::class, 'show'])->name('staff.family-planning.show');
+        Route::get('/staff/family-planning/{id}/edit', [StaffFamilyPlanningController::class, 'edit'])->name('staff.family-planning.edit');
+        Route::put('/staff/family-planning/{id}', [StaffFamilyPlanningController::class, 'update'])->name('staff.family-planning.update');
+        Route::delete('/staff/family-planning/{id}', [StaffFamilyPlanningController::class, 'destroy'])->name('staff.family-planning.destroy');
+
+        // CBC Results for Staff
+        Route::get('/staff/cbc-results', [StaffCbcResultController::class, 'index'])->name('staff.cbc-results.index');
+        Route::get('/staff/cbc-results/create', [StaffCbcResultController::class, 'create'])->name('staff.cbc-results.create');
+        Route::post('/staff/cbc-results/store', [StaffCbcResultController::class, 'store'])->name('staff.cbc-results.store');
+        Route::get('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'show'])->name('staff.cbc-results.show');
+        Route::get('/staff/cbc-results/{id}/edit', [StaffCbcResultController::class, 'edit'])->name('staff.cbc-results.edit');
+        Route::put('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'update'])->name('staff.cbc-results.update');
+        Route::delete('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'destroy'])->name('staff.cbc-results.destroy');
+
+        // Urinalysis Results for Staff
+        Route::get('/staff/urinalysis-results', [StaffUrinalysisController::class, 'index'])->name('staff.urinalysis-results.index');
+        Route::get('/staff/urinalysis-results/create', [StaffUrinalysisController::class, 'create'])->name('staff.urinalysis-results.create');
+        Route::post('/staff/urinalysis-results/store', [StaffUrinalysisController::class, 'store'])->name('staff.urinalysis-results.store');
+        Route::get('/staff/urinalysis-results/{id}', [StaffUrinalysisController::class, 'show'])->name('staff.urinalysis-results.show');
+        Route::get('/staff/urinalysis-results/{id}/edit', [StaffUrinalysisController::class, 'edit'])->name('staff.urinalysis-results.edit');
+        Route::put('/staff/urinalysis-results/{id}', [StaffUrinalysisController::class, 'update'])->name('staff.urinalysis-results.update');
+        Route::delete('/staff/urinalysis-results/{id}', [StaffUrinalysisController::class, 'destroy'])->name('staff.urinalysis-results.destroy');
     });
 
-    //Appointment management routes
-    Route::get('/staff/appointments', [StaffAppointmentController::class, 'index'])->name('staff.appointments.index');
-    Route::get('/staff/appointments/create', [StaffAppointmentController::class, 'create'])->name('staff.appointments.create');
-    Route::post('/staff/appointments/store', [StaffAppointmentController::class, 'store'])->name('staff.appointments.store');
-    Route::get('/staff/appointments/{id}', [StaffAppointmentController::class, 'show'])->name('staff.appointments.show');
-    Route::get('/staff/appointments/{id}/edit', [StaffAppointmentController::class, 'edit'])->name('staff.appointments.edit');
-    Route::put('/staff/appointments/{id}', [StaffAppointmentController::class, 'update'])->name('staff.appointments.update');
-    Route::delete('/staff/appointments/{id}', [StaffAppointmentController::class, 'destroy'])->name('staff.appointments.destroy');
-
-
-    // Prenatal Records
-    Route::get('/staff/prenatal-record', [StaffPrenatalController::class, 'index'])->name('staff.prenatal-record.index');
-    Route::get('/staff/prenatal-record/create', [StaffPrenatalController::class, 'create'])->name('staff.prenatal-record.create');
-    Route::post('/staff/prenatal-record/store', [StaffPrenatalController::class, 'store'])->name('staff.prenatal-record.store');
-    Route::get('/staff/prenatal-record/{id}', [StaffPrenatalController::class, 'show'])->name('staff.prenatal-record.show');
-    Route::get('/staff/prenatal-record/{id}/edit', [StaffPrenatalController::class, 'edit'])->name('staff.prenatal-record.edit');
-    Route::put('/staff/prenatal-record/{id}', [StaffPrenatalController::class, 'update'])->name('staff.prenatal-record.update');
-    Route::delete('/staff/prenatal-record/{id}', [StaffPrenatalController::class, 'destroy'])->name('staff.prenatal-record.destroy');
-
-    //Family Planning
-    Route::get('/staff/family-planning', [StaffFamilyPlanningController::class, 'index'])->name('staff.family-planning.index');
-    Route::get('/staff/family-planning/create', [StaffFamilyPlanningController::class, 'create'])->name('staff.family-planning.create');
-    Route::post('/staff/family-planning/store', [StaffFamilyPlanningController::class, 'store'])->name('staff.family-planning.store');
-    Route::get('/staff/family-planning/{id}', [StaffFamilyPlanningController::class, 'show'])->name('staff.family-planning.show');
-    Route::get('/staff/family-planning/{id}/edit', [StaffFamilyPlanningController::class, 'edit'])->name('staff.family-planning.edit');
-    Route::put('/staff/family-planning/{id}', [StaffFamilyPlanningController::class, 'update'])->name('staff.family-planning.update');
-    Route::delete('/staff/family-planning/{id}', [StaffFamilyPlanningController::class, 'destroy'])->name('staff.family-planning.destroy');
-
-    //Dental Records
-    Route::get('/staff/dental-record', [StaffDentalController::class, 'index'])->name('staff.dental-record.index');
-    Route::get('/staff/dental-record/create', [StaffDentalController::class, 'create'])->name('staff.dental-record.create');
-    Route::post('/staff/dental-record/store', [StaffDentalController::class, 'store'])->name('staff.dental-record.store');
-    Route::get('/staff/dental-record/{id}', [StaffDentalController::class, 'show'])->name('staff.dental-record.show');
-    Route::get('/staff/dental-record/{id}/edit', [StaffDentalController::class, 'edit'])->name('staff.dental-record.edit');
-    Route::put('/staff/dental-record/{id}', [StaffDentalController::class, 'update'])->name('staff.dental-record.update');
-    Route::delete('/staff/dental-record/{id}', [StaffDentalController::class, 'destroy'])->name('staff.dental-record.destroy');
-    //CBC Results
-    Route::get('/staff/cbc-results', [StaffCbcResultController::class, 'index'])->name('staff.cbc-results.index');
-    Route::get('/staff/cbc-results/create', [StaffCbcResultController::class, 'create'])->name('staff.cbc-results.create');
-    Route::post('/staff/cbc-results/store', [StaffCbcResultController::class, 'store'])->name('staff.cbc-results.store');
-    Route::get('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'show'])->name('staff.cbc-results.show');
-    Route::get('/staff/cbc-results/{id}/edit', [StaffCbcResultController::class, 'edit'])->name('staff.cbc-results.edit');
-    Route::put('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'update'])->name('staff.cbc-results.update');
-    Route::delete('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'destroy'])->name('staff.cbc-results.destroy');
-    //Urinalysis Results
-    Route::get('/staff/urinalysis-results', [StaffUrinalysisController::class, 'index'])->name('staff.urinalysis-results.index');
-    Route::get('/staff/urinalysis-results/create', [StaffUrinalysisController::class, 'create'])->name('staff.urinalysis-results.create');
-    Route::post('/staff/urinalysis-results/store', [StaffUrinalysisController::class, 'store'])->name('staff.urinalysis-results.store');
-    Route::get('/staff/urinalysis-results/{id}', [StaffUrinalysisController::class, 'show'])->name('staff.urinalysis-results.show');
-    Route::get('/staff/urinalysis-results/{id}/edit', [StaffUrinalysisController::class, 'edit'])->name('staff.urinalysis-results.edit');
-    Route::put('/staff/urinalysis-results/{id}', [StaffUrinalysisController::class, 'update'])->name('staff.urinalysis-results.update');
-    Route::delete('/staff/urinalysis-results/{id}', [StaffUrinalysisController::class, 'destroy'])->name('staff.urinalysis-results.destroy');
     //Patient management routes
     // Route::get('/staff/patients', [StaffPatientController::class, 'index'])->name('staff.patient.index');
     // Route::get('/staff/patients/{id}', [StaffPatientController::class, 'show'])->name('staff.patients.show');
 
-    //Infirmary
-    Route::get('/staff/health-assessment', [StaffInfirmaryController::class, 'index'])->name('staff.infirmary.index');
-    Route::get('/staff/create-health-assessment', [StaffInfirmaryController::class, 'create'])->name('staff.infirmary.create');
-    Route::post('/staff/health-assessment/store', [StaffInfirmaryController::class, 'store'])->name('staff.infirmary.store');
-    Route::get('/staff/health-assessment/{id}', [StaffInfirmaryController::class, 'show'])->name('staff.infirmary.show');
-    Route::get('/staff/health-assessment/{id}/edit', [StaffInfirmaryController::class, 'edit'])->name('staff.infirmary.edit');
-    Route::post('/staff/health-assessment/{id}/update', [StaffInfirmaryController::class, 'update'])->name('staff.infirmary.update');
-    Route::delete('/staff/health-assessment/{user}', [StaffInfirmaryController::class, 'destroy'])->name('staff.infirmary.destroy');
 
     // Newborn Screening
     Route::get('staff-newborn_screenings', [StaffNewbornScreeningController::class, 'index'])->name('staff.newborn_screenings.index');

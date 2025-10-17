@@ -7,7 +7,9 @@
                 <div class="col mr-2">
                     <div class="d-flex align-items-center justify-content-between">
                         <h1 class="display-6 ">Health Assessment</h1>
-
+                        <a href="{{ route('staff.infirmary.create') }}" class="btn btn-primary btn-sm">
+                            Add Data
+                        </a>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
@@ -79,45 +81,28 @@
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    //Search
+    // Client-side search functionality for health assessment
     $(document).ready(function() {
         $('#searchInput').on('keyup', function() {
-            let query = $(this).val();
+            let query = $(this).val().toLowerCase().trim();
+            let visibleRows = 0;
 
-            $.ajax({
-                url: "/doctor/patients/search",
-                type: 'GET',
-                data: {
-                    search: query
-                },
-                success: function(data) {
-                    let tableBody = $('#patientTableBody');
-                    let patientCount = $('#patientCount');
-                    tableBody.empty();
-
-                    if (data.length > 0) {
-                        $.each(data, function(index, patient) {
-                            let row = `<tr onclick="window.location='patients/${patient.id}';" style="cursor: pointer;">
-                                    <td>${patient.firstname} ${patient.lastname}</td>
-                                    <td>${patient.role.charAt(0).toUpperCase() + patient.role.slice(1)}</td>
-                                    <td>${patient.email}</td>
-                                    <td>${patient.address}</td>
-                                    <td>${patient.contact_no}</td>
-                                </tr>`;
-                            tableBody.append(row);
-                        });
-                        patientCount.text(data.length);
-                    } else {
-                        tableBody.append(
-                            '<tr><td colspan="5" class="text-center text-muted">No patients found.</td></tr>'
-                        );
-                        patientCount.text('0');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
+            $('#myTable tbody tr').each(function() {
+                let row = $(this);
+                let text = row.text().toLowerCase();
+                
+                if (text.includes(query)) {
+                    row.show();
+                    visibleRows++;
+                } else {
+                    row.hide();
                 }
             });
+
+            // Update count if there's a counter element
+            if ($('#patientCount').length) {
+                $('#patientCount').text(visibleRows);
+            }
         });
     });
 </script>
