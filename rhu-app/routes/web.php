@@ -57,6 +57,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register')->middleware(RedirectIfAuthenticated::class);
 Route::post('/register', [RegisterController::class, 'register'])->middleware(PreventBackHistory::class);
 Route::middleware('auth')->group(function () {
+
+    Route::post('/send-sms', [SmsController::class, 'sendSms'])->name('send.sms');
+
     // Doctor routes
     Route::middleware(Doctor::class)->group(function () {
         //Search routes
@@ -145,8 +148,6 @@ Route::middleware('auth')->group(function () {
         // Route::get('/doctor/health-record/{id}/edit', [HealthRecordController::class, 'edit'])->name('admin.health-record.edit');
         // Route::put('/doctor/health-record/{id}', [HealthRecordController::class, 'update'])->name('admin.health-record.update');
         // Route::delete('/doctor/health-record/{id}', [HealthRecordController::class, 'destroy'])->name('admin.health-record.destroy');
-
-        Route::post('/send-sms', [SmsController::class, 'sendSms'])->name('send.sms');
 
         // Birthing Station routes
 
