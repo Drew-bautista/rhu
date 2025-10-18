@@ -20,6 +20,9 @@ class Staff
       return $next($request);
     }
 
+    // Log the issue for debugging
+    \Log::info('Staff middleware failed - User: ' . (Auth::check() ? Auth::user()->email . ' (Role: ' . Auth::user()->role . ')' : 'Not authenticated'));
+    
     return redirect()->route('error');
   }
 }

@@ -42,6 +42,7 @@ use App\Http\Controllers\Doctor\DoctorTreatmentController;
 use App\Http\Controllers\Doctor\FamilyPlanningController;
 use App\Http\Controllers\Doctor\HealthInformationController;
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\TestController;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\Doctor;
 use App\Http\Middleware\PreventBackHistory;
@@ -59,6 +60,9 @@ Route::post('/register', [RegisterController::class, 'register'])->middleware(Pr
 Route::middleware('auth')->group(function () {
 
     Route::post('/send-sms', [SmsController::class, 'sendSms'])->name('send.sms');
+    
+    // Test route for debugging authentication
+    Route::get('/test-auth', [TestController::class, 'testAuth'])->name('test.auth');
 
     // Doctor routes
     Route::middleware(Doctor::class)->group(function () {

@@ -12,11 +12,21 @@ class StaffDashboardController extends Controller
     // Display a listing of the users
     public function index()
     {
-        $totalPatients = Appointment::where('status', 'completed')->count();
-        $totalAppointments = Appointment::where('status', 'pending')->count();
-        $totalStaff = User::where('role', 'staff')->count();
-        $appointments = Appointment::where('status', 'pending')->orderBy('date_of_appointment', 'asc')->get();
+        try {
+            $totalPatients = Appointment::where('status', 'completed')->count();
+            $totalAppointments = Appointment::where('status', 'pending')->count();
+            $totalStaff = User::where('role', 'staff')->count();
+            $appointments = Appointment::where('status', 'pending')->orderBy('date_of_appointment', 'asc')->get();
 
-        return view('staff.index', compact('totalPatients', 'totalAppointments', 'totalStaff', 'appointments'));
+            return view('staff.index', compact('totalPatients', 'totalAppointments', 'totalStaff', 'appointments'));
+        } catch (\Exception $e) {
+            \Log::error('Staff Dashboard Error: ' . $e->getMessage());
+            return view('staff.index', [
+                'totalPatients' => 0,
+                'totalAppointments' => 0,
+                'totalStaff' => 0,
+                'appointments' => collect()
+            ]);
+        }
     }
 }
