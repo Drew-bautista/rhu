@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="d-flex align-items-center justify-content-between">
                     <h1 class="display-6 fw-500">Create New Appointment</h1>
-                    <a href="{{ route('admin.appointments.index') }}" class="btn btn-secondary bg-none btn-sm">
+                    <a href="{{ route('staff.appointments.index') }}" class="btn btn-secondary bg-none btn-sm">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                 </div>
@@ -32,7 +32,7 @@
                 @endif
 
                 <!-- Appointment Form -->
-                <form action="{{ route('admin.appointments.store') }}" method="POST">
+                <form action="{{ route('staff.appointments.store') }}" method="POST">
                     @csrf
                     <div class="row">
                         <!-- Name -->

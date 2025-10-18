@@ -8,12 +8,12 @@
                     <div class="card-body">
                         <h2>Create Prenatal Record</h2>
                         <div class="position-absolute top-0 end-0 mt-4 me-4">
-                            <a href="{{ route('admin.prenatal-record.index') }}" class="text-dark" style="font-size: 1.25rem;">
+                            <a href="{{ route('staff.prenatal-record.index') }}" class="text-dark" style="font-size: 1.25rem;">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                         </div>
                         <br>
-                        <form action="{{ route('admin.prenatal-record.store') }}" method="POST">
+                        <form action="{{ route('staff.prenatal-record.store') }}" method="POST">
                             @csrf
                             @if ($errors->any())
                                 <div class="alert alert-danger">

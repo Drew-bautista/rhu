@@ -6,8 +6,10 @@
             <div class="row">
                 <div class="col mr-0">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h1 class="display-6  ">Monthly Appointments</h1>
-
+                        <h1 class="display-6">Monthly Appointments</h1>
+                        <a href="{{ route('staff.appointments.create') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Add Appointment
+                        </a>
                     </div>
                         {{-- Search bar --}}
                         <x-searchBar placeholder="Search appointments..." />
@@ -36,7 +38,7 @@
                                         {{-- <td>{{ $appointment->id }}</td> --}}
                                         <td>{{ $appointment->name }}</td>
                                         <td>{{ $appointment->contact_number }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }} /
+                                        <td>{{ \Carbon\Carbon::parse($appointment->date_of_appointment)->format('F j, Y') }} /
                                             {{ \Carbon\Carbon::parse($appointment->time)->format('h:i A') }}
                                         </td>
                                         <td>{{ $appointment->service }}</td>

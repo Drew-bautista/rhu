@@ -32,7 +32,7 @@
                 @endif
 
                 <!-- Edit Form -->
-                <form action="{{ route('admin.prenatal-record.update', $prenatalRecord->id) }}" method="POST">
+                <form action="{{ route('staff.prenatal-record.update', $prenatalRecord->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="row">

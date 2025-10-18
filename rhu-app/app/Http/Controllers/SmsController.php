@@ -8,9 +8,20 @@ class SmsController extends Controller
 {
     public function sendSms(Request $request)
     {
+        // Validate input
+        $request->validate([
+            'contact_number' => 'required|string',
+            'message' => 'required|string|max:1600'
+        ]);
+
         $sid = env('TWILIO_ACCOUNT_SID');
         $token = env('TWILIO_AUTH_TOKEN');
         $from = '+17406406628'; // Twilio number
+
+        // Check if Twilio credentials are configured
+        if (!$sid || !$token) {
+            return back()->with('error', 'SMS service not configured properly.');
+        }
 
         $to = $request->input('contact_number');
         $body = $request->input('message');
@@ -33,15 +44,24 @@ class SmsController extends Controller
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
         $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if (curl_errno($ch)) {
             $error_msg = curl_error($ch);
             curl_close($ch);
-            return back()->with('error', 'Curl error: ' . $error_msg);
+            \Log::error('SMS Curl Error: ' . $error_msg);
+            return back()->with('error', 'Failed to send SMS. Please try again.');
         }
 
         curl_close($ch);
 
-        return back()->with('success', 'Message sent successfully!');
+        // Check if the request was successful
+        if ($httpCode >= 200 && $httpCode < 300) {
+            \Log::info('SMS sent successfully to: ' . $to);
+            return back()->with('success', 'Message sent successfully!');
+        } else {
+            \Log::error('SMS API Error: HTTP ' . $httpCode . ' - ' . $response);
+            return back()->with('error', 'Failed to send SMS. Please check the phone number and try again.');
+        }
     }
 }

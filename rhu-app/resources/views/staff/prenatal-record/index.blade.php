@@ -6,8 +6,10 @@
             <div class="row">
                 <div class="col mr-0">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h1 class="display-6 ">Prenatal Records</h1>
-
+                        <h1 class="display-6">Prenatal Records</h1>
+                        <a href="{{ route('staff.prenatal-record.create') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Add Prenatal Record
+                        </a>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
