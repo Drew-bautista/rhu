@@ -49,8 +49,14 @@ class StaffInventoryController extends Controller
 
     public function show(Inventory $inventory)
     {
-        $prescriptions = $inventory->prescriptions()->with(['appointment', 'prescribedBy', 'dispensedBy'])->latest()->get();
-        return view('staff.inventory.show', compact('inventory', 'prescriptions'));
+        try {
+            $prescriptions = $inventory->prescriptions()->with(['appointment', 'prescribedBy', 'dispensedBy'])->latest()->get();
+            return view('staff.inventory.show', compact('inventory', 'prescriptions'));
+        } catch (\Exception $e) {
+            \Log::error('Inventory Show Error: ' . $e->getMessage());
+            return redirect()->route('staff.inventory.index')
+                ->with('error', 'Unable to load inventory details. Please try again.');
+        }
     }
 
     public function edit(Inventory $inventory)
