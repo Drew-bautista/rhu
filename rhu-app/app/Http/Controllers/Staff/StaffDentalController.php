@@ -11,7 +11,7 @@ class StaffDentalController extends Controller
 {
     public function index()
     {
-        $dentalRecords = DentalRecords::with('appointments')->get(); // Fetch all dental records
+        $dentalRecords = DentalRecords::with('appointments')->latest()->get(); // Fetch all dental records
         return view('staff.dental-record.index', compact('dentalRecords'));
     }
 

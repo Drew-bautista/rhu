@@ -12,7 +12,7 @@ class StaffPrenatalController extends Controller
 {
     public function index()
     {
-        $prenatalRecords = PrenatalRecords::with('appointments')->get();
+        $prenatalRecords = PrenatalRecords::with('appointments')->latest()->get();
         return view('staff.prenatal-record.index')->with('prenatalRecords', $prenatalRecords); // Fetch prenatal records logic here
 
     }

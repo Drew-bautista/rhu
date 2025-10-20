@@ -12,7 +12,7 @@ class StaffAppointmentController extends Controller
 
     public function index()
     {
-        $appointments = Appointment::all();
+        $appointments = Appointment::latest()->get();
         return view('staff.appointments.index', compact('appointments'));
     }
     public function show($id)

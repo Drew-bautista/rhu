@@ -219,7 +219,7 @@ class AppointmentController extends Controller
     // Display a listing of appointments
 //     public function index()
 //     {
-//         $appointments = Appointment::all();
+//         $appointments = Appointment::latest()->get();
 //         return view('admin.appointments.index', compact('appointments'));
 //     }
 

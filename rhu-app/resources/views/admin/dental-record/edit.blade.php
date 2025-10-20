@@ -39,10 +39,16 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control"
-                                    placeholder="John Doe" value="{{ old('name', $dentalRecords->appointments ? $dentalRecords->appointments->name : 'N/A') }}"
-                                    readonly>
+                                <label for="appointment_id">Name</label>
+                                <select name="appointment_id" id="appointment_id" class="form-control" required>
+                                    <option value="">-- Select Appointment --</option>
+                                    @foreach($appointments as $appointment)
+                                        <option value="{{ $appointment->id }}"
+                                            {{ (int) old('appointment_id', $dentalRecords->appointment_id) === $appointment->id ? 'selected' : '' }}>
+                                            {{ $appointment->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 

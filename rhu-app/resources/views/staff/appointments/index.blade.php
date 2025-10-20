@@ -16,6 +16,13 @@
                     </div>
                 </div>
 
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <div class="card-body">
                     <div class="table table-responsive">
                         <table class="table table-hover" id="appointmentTable" width="100%" cellspacing="0">
@@ -66,7 +73,10 @@
                                         </td>
                                         <td>
                                             <a href="{{ route('staff.appointments.show', $appointment->id) }}"
-                                                class="btn btn-info btn-sm"><i class="fas fa-eye text-white"></i></a>
+                                                class="btn btn-info btn-sm" title="View"><i class="fas fa-eye text-white"></i></a>
+                                            
+                                            <a href="{{ route('staff.appointments.edit', $appointment->id) }}"
+                                                class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-edit text-white"></i></a>
 
                                             {{-- <a type="button" class=" open-modal text-decoration-none"
                                                 data-bs-toggle="modal" data-bs-target="#smsModal"

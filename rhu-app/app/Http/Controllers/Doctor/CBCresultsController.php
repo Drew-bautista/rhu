@@ -11,7 +11,7 @@ class CBCresultsController extends Controller
 {
     public function index()
     {
-        $cbcResults = CBC_Results::with('appointments')->get();
+        $cbcResults = CBC_Results::with('appointments')->latest()->get();
         return view('admin.cbc-results.index', compact('cbcResults'));
     }
 

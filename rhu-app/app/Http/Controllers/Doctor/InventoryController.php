@@ -12,7 +12,7 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $inventory = Inventory::all();
+        $inventory = Inventory::latest()->get();
         $lowStockItems = Inventory::whereColumn('quantity_in_stock', '<=', 'reorder_level')->get();
         return view('admin.inventory.index', compact('inventory', 'lowStockItems'));
     }
@@ -36,7 +36,6 @@ class InventoryController extends Controller
             'expiry_date' => 'nullable|date',
             'batch_number' => 'nullable|string',
             'supplier' => 'nullable|string',
-            'unit_cost' => 'nullable|numeric|min:0',
             'storage_location' => 'nullable|string',
             'notes' => 'nullable|string'
         ]);
@@ -60,27 +59,33 @@ class InventoryController extends Controller
 
     public function update(Request $request, Inventory $inventory)
     {
-        $validated = $request->validate([
-            'medicine_name' => 'required|string|max:255',
-            'generic_name' => 'nullable|string|max:255',
-            'brand_name' => 'nullable|string|max:255',
-            'medicine_type' => 'required|in:tablet,capsule,syrup,injection,cream,drops,inhaler,other',
-            'dosage_strength' => 'required|string',
-            'quantity_in_stock' => 'required|integer|min:0',
-            'reorder_level' => 'required|integer|min:0',
-            'unit_of_measure' => 'required|string',
-            'expiry_date' => 'nullable|date',
-            'batch_number' => 'nullable|string',
-            'supplier' => 'nullable|string',
-            'unit_cost' => 'nullable|numeric|min:0',
-            'storage_location' => 'nullable|string',
-            'notes' => 'nullable|string'
-        ]);
+        try {
+            $validated = $request->validate([
+                'medicine_name' => 'required|string|max:255',
+                'generic_name' => 'nullable|string|max:255',
+                'brand_name' => 'nullable|string|max:255',
+                'medicine_type' => 'required|in:tablet,capsule,syrup,injection,cream,drops,inhaler,other',
+                'dosage_strength' => 'required|string',
+                'quantity_in_stock' => 'required|integer|min:0',
+                'reorder_level' => 'required|integer|min:0',
+                'unit_of_measure' => 'required|string',
+                'expiry_date' => 'nullable|date',
+                'batch_number' => 'nullable|string',
+                'supplier' => 'nullable|string',
+                'storage_location' => 'nullable|string',
+                'notes' => 'nullable|string'
+            ]);
 
-        $inventory->update($validated);
+            $inventory->update($validated);
 
-        return redirect()->route('admin.inventory.index')
-            ->with('success', 'Inventory updated successfully.');
+            return redirect()->route('admin.inventory.index')
+                ->with('success', 'Inventory updated successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Inventory Update Error: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Unable to update inventory. Please try again.')
+                ->withInput();
+        }
     }
 
     public function destroy(Inventory $inventory)

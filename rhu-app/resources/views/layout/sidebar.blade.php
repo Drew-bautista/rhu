@@ -264,10 +264,10 @@
                     </a>
                 </div>
                 
-                {{-- Infirmary Dropdown --}}
+                {{-- Services Offered Dropdown --}}
                 <div class="dropdownSmsprofile">
                     <button class="dropdown-btn" onclick="toggleDropdown(this)">
-                        <i class='bx bx-plus-medical'></i> Infirmary <i class="fa fa-caret-down" style="float: right;"></i>
+                        <i class='bx bx-plus-medical'></i> Services Offered <i class="fa fa-caret-down" style="float: right;"></i>
                     </button>
                     <div class="dropdown-container">
                         <a class="dropdown-btn" href="{{ route('admin.infirmary.index') }}">
@@ -317,6 +317,21 @@
                         </a>
                         <a class="dropdown-btn" href="{{ route('admin.urinalysis-results.index') }}">
                             <i class='bx bx-test-tube'></i> Urinalysis
+                        </a>
+                    </div>
+                </div>
+                
+                {{-- Prescription Management --}}
+                <div class="dropdownSmsprofile">
+                    <button class="dropdown-btn" onclick="toggleDropdown(this)">
+                        <i class='bx bx-capsule'></i> Prescription Management <i class="fa fa-caret-down" style="float: right;"></i>
+                    </button>
+                    <div class="dropdown-container">
+                        <a class="dropdown-btn" href="{{ route('admin.prescriptions.index') }}">
+                            <i class='bx bx-list-ul'></i> All Prescriptions
+                        </a>
+                        <a class="dropdown-btn" href="{{ route('admin.prescriptions.pending') }}">
+                            <i class='bx bx-time'></i> Pending Prescriptions
                         </a>
                     </div>
                 </div>

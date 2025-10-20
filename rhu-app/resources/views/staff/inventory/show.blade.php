@@ -72,10 +72,6 @@
                                             <td>{{ $inventory->reorder_level }} {{ $inventory->unit_of_measure }}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Unit Cost:</strong></td>
-                                            <td>{{ $inventory->unit_cost ? '₱' . number_format($inventory->unit_cost, 2) : 'N/A' }}</td>
-                                        </tr>
-                                        <tr>
                                             <td><strong>Expiry Date:</strong></td>
                                             <td>
                                                 @if($inventory->expiry_date)

@@ -85,11 +85,6 @@
                                 <input type="number" name="reorder_level" id="reorder_level" class="form-control" 
                                     value="{{ old('reorder_level', $inventory->reorder_level) }}" min="0" required>
                             </div>
-                            <div class="col-md-4">
-                                <label for="unit_cost" class="form-label">Unit Cost (₱)</label>
-                                <input type="number" name="unit_cost" id="unit_cost" class="form-control" 
-                                    value="{{ old('unit_cost', $inventory->unit_cost) }}" step="0.01" min="0">
-                            </div>
 
                             <div class="col-md-6">
                                 <label for="expiry_date" class="form-label">Expiry Date</label>

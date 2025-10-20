@@ -115,15 +115,6 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label for="unit_cost" class="form-label">Unit Cost (₱)</label>
-                                    <input type="number" class="form-control @error('unit_cost') is-invalid @enderror" 
-                                           id="unit_cost" name="unit_cost" value="{{ old('unit_cost', $inventory->unit_cost) }}"
-                                           min="0" step="0.01" placeholder="0.00">
-                                    @error('unit_cost')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
                             </div>
 
                             <div class="row">

@@ -66,14 +66,6 @@
                                         <th>Reorder Level:</th>
                                         <td>{{ $inventory->reorder_level }} {{ $inventory->unit_of_measure }}</td>
                                     </tr>
-                                    <tr>
-                                        <th>Unit Cost:</th>
-                                        <td>₱{{ number_format($inventory->unit_cost ?? 0, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Total Value:</th>
-                                        <td>₱{{ number_format(($inventory->unit_cost ?? 0) * $inventory->quantity_in_stock, 2) }}</td>
-                                    </tr>
                                 </table>
                             </div>
                         </div>

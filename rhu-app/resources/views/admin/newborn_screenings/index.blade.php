@@ -14,7 +14,7 @@
                             </div>
                         </div>
                         {{-- Search bar --}}
-                        <x-searchBar placeholder="Search urinalysis..." />
+                        <x-searchBar placeholder="Search newborn screening..." />
                     </div>
                 </div>
 

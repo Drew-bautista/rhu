@@ -33,12 +33,13 @@ class NewbornScreeningController extends Controller
             'gestational_age' => 'nullable|integer',
             'place_of_birth' => 'nullable|string|max:255',
 
-
-            'mother_name' => 'required|string|max:255',
+            // Mother fields - separate first, middle, last names
+            'mother_first_name' => 'required|string|max:255',
+            'mother_middle_name' => 'nullable|string|max:255',
+            'mother_last_name' => 'required|string|max:255',
             'mother_age' => 'nullable|integer',
             'mother_address' => 'nullable|string|max:500',
             'mother_contact' => 'nullable|string|max:20',
-
 
             'screening_date' => 'required|date',
             'facility' => 'nullable|string|max:255',
@@ -46,17 +47,12 @@ class NewbornScreeningController extends Controller
             'sample_collection_at' => 'nullable|date',
             'specimen_type' => 'nullable|string|max:255',
 
-            'conditions_tested' => 'nullable|string|max:1000', // changed to string to accept JSON
+            'conditions_tested' => 'nullable|string|max:1000',
             'result_status' => 'in:Normal,Positive,Retest',
             'remarks' => 'nullable|string|max:1000',
 
             'provider_name' => 'nullable|string|max:255',
             'provider_role' => 'nullable|string|max:255',
-
-
-
-            // 'conditions_tested.*' => 'string|max:255',
-
         ]);
 
         // If multiple conditions selected
@@ -92,7 +88,10 @@ class NewbornScreeningController extends Controller
             'gestational_age' => 'nullable|integer',
             'place_of_birth' => 'nullable|string|max:255',
 
-            'mother_name' => 'required|string|max:255',
+            // Mother fields - separate first, middle, last names
+            'mother_first_name' => 'required|string|max:255',
+            'mother_middle_name' => 'nullable|string|max:255',
+            'mother_last_name' => 'required|string|max:255',
             'mother_age' => 'nullable|integer',
             'mother_address' => 'nullable|string|max:500',
             'mother_contact' => 'nullable|string|max:20',
@@ -103,7 +102,7 @@ class NewbornScreeningController extends Controller
             'sample_collection_at' => 'nullable|date',
             'specimen_type' => 'nullable|string|max:255',
 
-            'conditions_tested' => 'nullable|string|max:1000', // accept JSON or comma separated
+            'conditions_tested' => 'nullable|string|max:1000',
             'result_status' => 'in:Normal,Positive,Retest',
             'remarks' => 'nullable|string|max:1000',
 

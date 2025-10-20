@@ -11,7 +11,7 @@ class UrinalysisController extends Controller
 {
     public function index()
     {
-        $urinalysisResults = UrinalysisResult::with('appointments')->get();
+        $urinalysisResults = UrinalysisResult::with('appointments')->latest()->get();
         return view('admin.urinalysis-results.index', compact('urinalysisResults'));
     }
 

@@ -36,7 +36,6 @@ class StaffInventoryController extends Controller
             'expiry_date' => 'nullable|date',
             'batch_number' => 'nullable|string',
             'supplier' => 'nullable|string',
-            'unit_cost' => 'nullable|numeric|min:0',
             'storage_location' => 'nullable|string',
             'notes' => 'nullable|string'
         ]);
@@ -78,7 +77,6 @@ class StaffInventoryController extends Controller
             'expiry_date' => 'nullable|date',
             'batch_number' => 'nullable|string',
             'supplier' => 'nullable|string',
-            'unit_cost' => 'nullable|numeric|min:0',
             'storage_location' => 'nullable|string',
             'notes' => 'nullable|string'
         ]);

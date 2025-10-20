@@ -40,7 +40,7 @@
                         <tbody>
                             @forelse($tbdots as $case)
                                 <tr>
-                                    <td>{{ $case->patient ? $case->patient->name : 'N/A' }}</td>
+                                    <td>{{ $case->patient_name ?: optional($case->patient)->name ?: 'N/A' }}</td>
                                     <td>{{ $case->date_of_diagnosis }}</td>
                                     <td>{{ ucfirst($case->tb_type) }}</td>
                                     <td>{{ $case->lab_result }}</td>

@@ -12,7 +12,7 @@ class DoctorPrenatalRecordController extends Controller
 {
     public function index()
     {
-        $prenatalRecords = PrenatalRecords::with('appointments')->get();
+        $prenatalRecords = PrenatalRecords::with('appointments')->latest()->get();
         return view('admin.prenatal-record.index')->with('prenatalRecords', $prenatalRecords); // Fetch prenatal records logic here
 
     }
@@ -29,7 +29,7 @@ class DoctorPrenatalRecordController extends Controller
             'weight' => 'required|numeric',
             'height' => 'required|numeric',
             'age_of_gestation' => 'required|integer',
-            'blood_pressure' => 'required|numeric',
+            'blood_pressure' => 'required|string|regex:/^\d{2,3}\/\d{2,3}$/',
             'nutritional_status' => 'required|in:normal,underweight,overweight',
             'birth_plan' => 'nullable|string',
             'dental_checkup' => 'nullable|string',
@@ -65,18 +65,35 @@ class DoctorPrenatalRecordController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            // 'appointment_id' => 'required|exists:appointments,id',
+            'appointment_id' => 'required|exists:appointments,id',
+            'service' => 'required|string',
             'weight' => 'required|numeric',
             'height' => 'required|numeric',
             'age_of_gestation' => 'required|integer',
-            'blood_pressure' => 'required|numeric',
+            'blood_pressure' => 'required|string|regex:/^\d{2,3}\/\d{2,3}$/',
             'nutritional_status' => 'required|in:normal,underweight,overweight',
             'birth_plan' => 'nullable|string',
             'dental_checkup' => 'nullable|string',
         ]);
 
         $prenatalRecord = PrenatalRecords::findOrFail($id);
-        $prenatalRecord->update($request->all());
+        
+        // Update prenatal record
+        $prenatalRecord->update([
+            'appointment_id' => $request->appointment_id,
+            'weight' => $request->weight,
+            'height' => $request->height,
+            'age_of_gestation' => $request->age_of_gestation,
+            'blood_pressure' => $request->blood_pressure,
+            'nutritional_status' => $request->nutritional_status,
+            'birth_plan' => $request->birth_plan,
+            'dental_checkup' => $request->dental_checkup,
+        ]);
+
+        // Update appointment service if needed
+        if ($prenatalRecord->appointments) {
+            $prenatalRecord->appointments->update(['service' => $request->service]);
+        }
 
         return redirect()->route('admin.prenatal-record.index')->with('success', 'Prenatal record updated successfully.');
     }

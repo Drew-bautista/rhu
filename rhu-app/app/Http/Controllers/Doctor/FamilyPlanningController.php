@@ -13,7 +13,7 @@ class FamilyPlanningController extends Controller
      */
     public function index()
     {
-        $familyPlannings = FamilyPlanning::all();
+        $familyPlannings = FamilyPlanning::with('appointments')->latest()->get();
         return view('admin.family-planning.index', compact('familyPlannings'));
     }
 

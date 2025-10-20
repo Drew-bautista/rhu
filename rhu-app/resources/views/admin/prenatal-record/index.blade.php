@@ -13,7 +13,7 @@
                     </div>
                 </div>
                         {{-- Search bar --}}
-                        <x-searchBar placeholder="Search appointments..." />
+                        <x-searchBar placeholder="Search prenatal records..." />
                     </div>
                 </div>
 

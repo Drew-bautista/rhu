@@ -182,6 +182,45 @@
                 </div>
             </div>
 
+            {{-- Health Assessments --}}
+            @if($data['infirmary']->count() > 0)
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Health Assessments</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr class="table-light">
+                                        <th>Date</th>
+                                        <th>Patient Name</th>
+                                        <th>Age</th>
+                                        <th>Weight (kg)</th>
+                                        <th>Height (cm)</th>
+                                        <th>Blood Pressure</th>
+                                        <th>Temperature</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($data['infirmary'] as $record)
+                                        <tr>
+                                            <td>{{ \Carbon\Carbon::parse($record->created_at)->format('M d, Y') }}</td>
+                                            <td>{{ $record->firstname }} {{ $record->lastname }}</td>
+                                            <td>{{ $record->age }}</td>
+                                            <td>{{ $record->weight ?? 'N/A' }}</td>
+                                            <td>{{ $record->height ?? 'N/A' }}</td>
+                                            <td>{{ $record->blood_pressure ?? 'N/A' }}</td>
+                                            <td>{{ $record->temperature ?? 'N/A' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             {{-- Vaccines Given --}}
             @if($data['vaccines']->count() > 0)
                 <div class="card mb-4">

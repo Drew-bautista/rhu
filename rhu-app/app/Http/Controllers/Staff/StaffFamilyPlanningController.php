@@ -13,7 +13,7 @@ class StaffFamilyPlanningController extends Controller
      */
     public function index()
     {
-        $familyPlannings = FamilyPlanning::all();
+        $familyPlannings = FamilyPlanning::latest()->get();
         return view('staff.family-planning.index', compact('familyPlannings'));
     }
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\Doctor\HealthRecordController;
 use App\Http\Controllers\Doctor\TbdotController;
 use App\Http\Controllers\Doctor\VaccineController;
 use App\Http\Controllers\Doctor\InventoryController;
+use App\Http\Controllers\Doctor\PrescriptionController;
 use App\Http\Controllers\Doctor\ReportController;
 
 use App\Http\Controllers\Doctor\NewbornScreeningController;
@@ -118,6 +119,14 @@ Route::middleware('auth')->group(function () {
         Route::put('/doctor/inventory/{inventory}', [InventoryController::class, 'update'])->name('admin.inventory.update');
         Route::delete('/doctor/inventory/{inventory}', [InventoryController::class, 'destroy'])->name('admin.inventory.destroy');
         Route::post('/doctor/inventory/prescribe', [InventoryController::class, 'prescribe'])->name('admin.inventory.prescribe');
+
+        // Prescription Management
+        Route::get('/doctor/prescriptions', [PrescriptionController::class, 'index'])->name('admin.prescriptions.index');
+        Route::get('/doctor/prescriptions/pending', [PrescriptionController::class, 'pending'])->name('admin.prescriptions.pending');
+        Route::get('/doctor/prescriptions/{prescription}', [PrescriptionController::class, 'show'])->name('admin.prescriptions.show');
+        Route::patch('/doctor/prescriptions/{prescription}/dispense', [PrescriptionController::class, 'dispense'])->name('admin.prescriptions.dispense');
+        Route::patch('/doctor/prescriptions/{prescription}/cancel', [PrescriptionController::class, 'cancel'])->name('admin.prescriptions.cancel');
+        Route::get('/doctor/prescriptions/patient/{patientName}', [PrescriptionController::class, 'patientHistory'])->name('admin.prescriptions.patient-history');
 
         // Report Generation
         Route::get('/doctor/reports', [ReportController::class, 'index'])->name('admin.reports.index');

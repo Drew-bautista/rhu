@@ -39,10 +39,24 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control"
-                                    placeholder="John Doe" value="{{ old('name', $prenatalRecord->appointments->name) }}"
-                                    readonly>
+                                <label for="appointment_id">Name</label>
+                                <select name="appointment_id" id="appointment_id" class="form-control" required>
+                                    <option value="">-- Select Appointment --</option>
+                                    @foreach($appointments as $appointment)
+                                        <option value="{{ $appointment->id }}"
+                                            {{ (int) old('appointment_id', $prenatalRecord->appointment_id) === $appointment->id ? 'selected' : '' }}>
+                                            {{ $appointment->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="service">Service</label>
+                                <input type="text" name="service" id="service" class="form-control"
+                                    value="{{ old('service', $prenatalRecord->appointments ? $prenatalRecord->appointments->service : '') }}" required>
                             </div>
                         </div>
 
@@ -73,8 +87,9 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="contact_number">Blood Pressure</label>
+                                <label for="blood_pressure">Blood Pressure</label>
                                 <input type="text" name="blood_pressure" id="blood_pressure" class="form-control"
+                                    placeholder="120/80" pattern="^\d{2,3}\/\d{2,3}$" title="Enter blood pressure in format: 120/80"
                                     value="{{ old('blood_pressure', $prenatalRecord->blood_pressure) }}" required>
                             </div>
                         </div>

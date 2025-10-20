@@ -11,7 +11,7 @@ class DoctorDentalController extends Controller
 {
     public function index()
     {
-        $dentalRecords = DentalRecords::with('appointments')->get(); // Fetch all dental records
+        $dentalRecords = DentalRecords::with('appointments')->latest()->get(); // Fetch all dental records
         return view('admin.dental-record.index', compact('dentalRecords'));
     }
 
@@ -57,7 +57,7 @@ class DoctorDentalController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-
+            'appointment_id' => 'required|exists:appointments,id',
             'services' => 'nullable|string',
             'tooth_area' => 'nullable|string',
             'findings' => 'required|string',
@@ -66,7 +66,7 @@ class DoctorDentalController extends Controller
 
         $dentalRecords = DentalRecords::findOrFail($id);
         $dentalRecords->update([
-
+            'appointment_id' => $request->appointment_id,
             'services' => $request->services,
             'tooth_area' => $request->tooth_area,
             'findings' => $request->findings,
