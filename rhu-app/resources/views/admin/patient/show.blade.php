@@ -6,10 +6,15 @@
             <div class="card-body px-4 px-md-5 pt-md-5 pt-3">
                 <div class="d-md-flex justify-content-between mb-4 mb-m-0">
                     <h1 class="mb-m-4">Patient Details</h1>
-                    <div>
+                    <div class="no-print">
+                        <button onclick="window.print()" class="btn btn-success me-2">
+                            <i class="fas fa-print me-2"></i>Print
+                        </button>
                         <a href="{{ route('admin.patient.edit', $patient->id) }}" class="btn btn-primary"><i
                                 class="fas fa-edit me-2"></i>Edit</a>
-                        </form>
+                        <a href="{{ route('admin.patient.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back
+                        </a>
                     </div>
                 </div>
             </div>

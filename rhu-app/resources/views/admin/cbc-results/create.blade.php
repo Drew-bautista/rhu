@@ -38,7 +38,7 @@
                                                 data-contact-number="{{ $appointment->contact_number }}"
                                                 data-address="{{ $appointment->address }}"
                                                 data-service="{{ $appointment->service }}">
-                                                {{ $appointment->name }}
+                                                {{ $appointment->name }} - {{ $appointment->service }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -157,29 +157,6 @@
                                         class="form-control form-control-sm">
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label for="newborn_screening"><strong>Newborn Screening</strong></label>
-                                    <input type="text" name="newborn_screening" id="newborn_screening"
-                                        class="form-control form-control-sm">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="hepa_b_screening"><strong>Hepa B Screening</strong></label>
-                                    <input type="text" name="hepa_b_screening" id="hepa_b_screening"
-                                        class="form-control form-control-sm">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="fasting_blood_sugar"><strong>Fasting Blood Sugar</strong></label>
-                                    <input type="number" step="0.01" name="fasting_blood_sugar"
-                                        id="fasting_blood_sugar" class="form-control form-control-sm">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="cholesterol"><strong>Cholesterol</strong></label>
-                                    <input type="number" step="0.01" name="cholesterol" id="cholesterol"
-                                        class="form-control form-control-sm">
-                                </div>
 
                                 <div class="col-md-6">
                                     <label for="remarks"><strong>Remarks</strong></label>

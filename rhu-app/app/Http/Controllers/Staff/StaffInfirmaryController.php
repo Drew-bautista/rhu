@@ -10,7 +10,7 @@ class StaffInfirmaryController extends Controller
 {
     public function index()
     {
-        $infirmary = Infirmary::with('appointments')->latest()->get();
+        $infirmary = Infirmary::latest()->get();
         return view('staff.infirmary.index', compact('infirmary'));
     }
 

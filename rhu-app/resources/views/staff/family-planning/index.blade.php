@@ -19,13 +19,13 @@
                             </div>
                         </div>
                         {{-- Search bar --}}
-                        <x-searchBar placeholder="Search appointments..." />
+                        <x-searchBar placeholder="Search family planning" />
                     </div>
                 </div>
 
                 <div class="card-body">
                     <div class="table table-responsive">
-                        <table class="table table-hover" id="" width="100%" cellspacing="0">
+                        <table class="table table-hover" id="familyPlanningTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr class="table-light">
                                     {{-- <th>Date of Visit</th> --}}
@@ -37,7 +37,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="">
+                            <tbody id="familyPlanningTableBody">
 
                                 @foreach ($familyPlannings as $familyPlanning)
                                     <tr>
@@ -77,3 +77,22 @@
     </div>
     </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Client-side filter for Family Planning
+    $(document).ready(function () {
+        const $input = $('#searchInput');
+        const $tbody = $('#familyPlanningTableBody');
+
+        if ($input.length && $tbody.length) {
+            $input.on('input', function () {
+                const q = $(this).val().toLowerCase().trim();
+                $tbody.find('tr').each(function () {
+                    const text = $(this).text().toLowerCase();
+                    $(this).toggle(text.indexOf(q) !== -1);
+                });
+            });
+        }
+    });
+</script>

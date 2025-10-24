@@ -11,7 +11,7 @@
                         </a>
                         </div>
                         {{-- Search bar --}}
-                        <x-searchBar placeholder="Search appointments..." />
+                        <x-searchBar placeholder="Search family planning records..." />
                     </div>
                 </div>
 
@@ -57,8 +57,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 @endsection
 

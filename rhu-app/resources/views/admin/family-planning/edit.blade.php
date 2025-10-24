@@ -13,6 +13,33 @@
             </div>
 
             <div class="card-body">
+                {{-- Display validation errors --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                {{-- Display success message --}}
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                {{-- Display error message --}}
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <form action="{{ route('admin.family-planning.update', $familyPlanning->id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -79,7 +106,7 @@
                             <div class="mb-3 form-group">
                                 <label for="date_of_follow_up" class="form-label">Follow Up Date</label>
                                 <input type="date" class="form-control" id="date_of_follow_up" name="date_of_follow_up"
-                                    value="{{ old('date_of_follow_up', $familyPlanning->date_of_follow_up) }}">
+                                    value="{{ old('date_of_follow_up', $familyPlanning->date_of_follow_up ? $familyPlanning->date_of_follow_up->format('Y-m-d') : '') }}">
                             </div>
                         </div>
                     </div>

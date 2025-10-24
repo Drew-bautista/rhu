@@ -13,8 +13,10 @@ use App\Http\Controllers\Doctor\PrescriptionController;
 use App\Http\Controllers\Doctor\ReportController;
 
 use App\Http\Controllers\Doctor\NewbornScreeningController;
+use App\Http\Controllers\Doctor\BirthCertificateController;
 use App\Http\Controllers\Doctor\UrinalysisController;
 use App\Http\Controllers\Staff\StaffAppointmentController;
+use App\Http\Controllers\Staff\StaffBirthCertificateController;
 use App\Http\Controllers\Staff\StaffCbcResultController;
 use App\Http\Controllers\Staff\StaffAnimalBiteController;
 use App\Http\Controllers\Staff\StaffDashboardController;
@@ -191,6 +193,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/doctor/family-planning/{id}', [FamilyPlanningController::class, 'update'])->name('admin.family-planning.update');
         Route::delete('/doctor/family-planning/{id}', [FamilyPlanningController::class, 'destroy'])->name('admin.family-planning.destroy');
 
+        //Birth Certificates
+        Route::get('/doctor/birth-certificates', [BirthCertificateController::class, 'index'])->name('admin.birth-certificates.index');
+        Route::get('/doctor/birth-certificates/create', [BirthCertificateController::class, 'create'])->name('admin.birth-certificates.create');
+        Route::post('/doctor/birth-certificates/store', [BirthCertificateController::class, 'store'])->name('admin.birth-certificates.store');
+        Route::get('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'show'])->name('admin.birth-certificates.show');
+        Route::get('/doctor/birth-certificates/{birthCertificate}/edit', [BirthCertificateController::class, 'edit'])->name('admin.birth-certificates.edit');
+        Route::put('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'update'])->name('admin.birth-certificates.update');
+        Route::delete('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'destroy'])->name('admin.birth-certificates.destroy');
+
         //Dental Records
         Route::get('/doctor/dental-record', [DoctorDentalController::class, 'index'])->name('admin.dental-record.index');
         Route::get('/doctor/dental-record/create', [DoctorDentalController::class, 'create'])->name('admin.dental-record.create');
@@ -337,6 +348,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/staff/cbc-results/{id}/edit', [StaffCbcResultController::class, 'edit'])->name('staff.cbc-results.edit');
         Route::put('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'update'])->name('staff.cbc-results.update');
         Route::delete('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'destroy'])->name('staff.cbc-results.destroy');
+
+        // Birth Certificates for Staff
+        Route::get('/staff/birth-certificates', [StaffBirthCertificateController::class, 'index'])->name('staff.birth-certificates.index');
+        Route::get('/staff/birth-certificates/create', [StaffBirthCertificateController::class, 'create'])->name('staff.birth-certificates.create');
+        Route::post('/staff/birth-certificates/store', [StaffBirthCertificateController::class, 'store'])->name('staff.birth-certificates.store');
+        Route::get('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'show'])->name('staff.birth-certificates.show');
+        Route::get('/staff/birth-certificates/{birthCertificate}/edit', [StaffBirthCertificateController::class, 'edit'])->name('staff.birth-certificates.edit');
+        Route::put('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'update'])->name('staff.birth-certificates.update');
+        Route::delete('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'destroy'])->name('staff.birth-certificates.destroy');
 
         // Urinalysis Results for Staff
         Route::get('/staff/urinalysis-results', [StaffUrinalysisController::class, 'index'])->name('staff.urinalysis-results.index');

@@ -31,6 +31,32 @@
                     </div>
                 @endif
 
+                {{-- Display success message --}}
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                {{-- Display error message --}}
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                {{-- Service Type Warning --}}
+                @if($cbcResult->appointments && strtolower($cbcResult->appointments->service) !== 'cbc')
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> This appointment is for "{{ $cbcResult->appointments->service }}" service, not CBC. 
+                        Please make sure you're editing the correct record.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <!-- Edit Form -->
                 <form action="{{ route('staff.cbc-results.update', $cbcResult->id) }}" method="POST">
                     @csrf
@@ -43,6 +69,15 @@
                                 <input type="text" name="name" id="name" class="form-control"
                                     placeholder="John Doe" value="{{ old('name', $cbcResult->appointments->name) }}"
                                     readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="service">Appointment Service</label>
+                                <input type="text" name="service" id="service" class="form-control"
+                                    value="{{ $cbcResult->appointments->service ?? 'N/A' }}" readonly
+                                    class="form-control {{ strtolower($cbcResult->appointments->service ?? '') !== 'cbc' ? 'border-warning' : 'border-success' }}">
+                                <small class="text-muted">This shows what service was booked for this appointment</small>
                             </div>
                         </div>
 
@@ -143,36 +178,6 @@
                                 <label for="basophils">Basophils</label>
                                 <input type="text" name="basophils" id="basophils" class="form-control"
                                     value="{{ old('basophils', $cbcResult->basophils) }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="newborn_screening">Newborn Screening</label>
-                                <input type="text" name="newborn_screening" id="newborn_screening"
-                                    class="form-control"
-                                    value="{{ old('newborn_screening', $cbcResult->newborn_screening) }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="hepa_b_screening">Hepa B Screening</label>
-                                <input type="text" name="hepa_b_screening" id="hepa_b_screening" class="form-control"
-                                    value="{{ old('hepa_b_screening', $cbcResult->hepa_b_screening) }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="fasting_blood_sugar">Fasting Blood Sugar</label>
-                                <input type="text" name="fasting_blood_sugar" id="fasting_blood_sugar"
-                                    class="form-control"
-                                    value="{{ old('fasting_blood_sugar', $cbcResult->fasting_blood_sugar) }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="cholesterol">Cholesterol</label>
-                                <input type="text" name="cholesterol" id="cholesterol" class="form-control"
-                                    value="{{ old('cholesterol', $cbcResult->cholesterol) }}">
                             </div>
                         </div>
                         <div class="col-md-4">

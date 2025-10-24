@@ -7,7 +7,7 @@
                 <div class="col">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h1 class="display-6">Patient History: {{ $patientName }}</h1>
-                        <div>
+                        <div class="no-print">
                             <button onclick="window.print()" class="btn btn-success">
                                 <i class="fas fa-print"></i> Print
                             </button>

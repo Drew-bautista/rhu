@@ -24,6 +24,22 @@
                             </div>
                         @endif
 
+                        {{-- Display success message --}}
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        {{-- Display error message --}}
+                        @if(session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         {{-- EDIT FORM --}}
                         <form action="{{ route('admin.newborn_screenings.update', $newborn_screening->id) }}"
                             method="POST">
@@ -63,7 +79,7 @@
                                 <div class="col-md-4 mb-3">
                                     <label>Date of Birth</label>
                                     <input type="date" name="date_of_birth" class="form-control"
-                                        value="{{ old('date_of_birth', $newborn_screening->date_of_birth) }}" required>
+                                        value="{{ old('date_of_birth', $newborn_screening->date_of_birth ? $newborn_screening->date_of_birth->format('Y-m-d') : '') }}" required>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label>Time of Birth</label>
@@ -110,9 +126,9 @@
 
                                 {{-- 🧾 newborn_Screening Details --}}
                                 <div class="col-md-4 mb-3">
-                                    <label>newborn_Screening Date</label>
-                                    <input type="date" name="newborn_screening_date" class="form-control"
-                                        value="{{ old('newborn_screening_date', $newborn_screening->newborn_screening_date) }}"
+                                    <label>Screening Date</label>
+                                    <input type="date" name="screening_date" class="form-control"
+                                        value="{{ old('screening_date', $newborn_screening->screening_date ? $newborn_screening->screening_date->format('Y-m-d') : '') }}"
                                         required>
                                 </div>
                                 <div class="col-md-4 mb-3">

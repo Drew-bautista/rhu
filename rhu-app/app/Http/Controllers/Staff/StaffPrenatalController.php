@@ -29,10 +29,12 @@ class StaffPrenatalController extends Controller
             'weight' => 'required|numeric',
             'height' => 'required|numeric',
             'age_of_gestation' => 'required|integer',
-            'blood_pressure' => 'required|numeric',
+            'blood_pressure' => ['required', 'string', 'max:20', 'regex:/^\d{2,3}\/\d{2,3}$/'],
             'nutritional_status' => 'required|in:normal,underweight,overweight',
             'birth_plan' => 'nullable|string',
             'dental_checkup' => 'nullable|string',
+        ], [
+            'blood_pressure.regex' => 'Blood pressure must be in the format XXX/XXX (e.g., 120/80)',
         ]);
 
         PrenatalRecords::create([
@@ -64,21 +66,42 @@ class StaffPrenatalController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            // 'appointment_id' => 'required|exists:appointments,id',
-            'weight' => 'required|numeric',
-            'height' => 'required|numeric',
-            'age_of_gestation' => 'required|integer',
-            'blood_pressure' => 'required|numeric',
-            'nutritional_status' => 'required|in:normal,underweight,overweight',
-            'birth_plan' => 'nullable|string',
-            'dental_checkup' => 'nullable|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'weight' => 'required|numeric',
+                'height' => 'required|numeric',
+                'age_of_gestation' => 'required|integer',
+                'blood_pressure' => ['required', 'string', 'max:20', 'regex:/^\d{2,3}\/\d{2,3}$/'],
+                'nutritional_status' => 'required|in:normal,underweight,overweight',
+                'service' => 'nullable|string|max:255',
+                'dental_checkup' => 'nullable|string|max:255',
+            ], [
+                'blood_pressure.regex' => 'Blood pressure must be in the format XXX/XXX (e.g., 120/80)',
+            ]);
 
-        $prenatalRecord = PrenatalRecords::findOrFail($id);
-        $prenatalRecord->update($request->all());
+            $prenatalRecord = PrenatalRecords::findOrFail($id);
+            
+            // Update the appointment name if it exists
+            if ($prenatalRecord->appointments) {
+                $prenatalRecord->appointments->update(['name' => $validatedData['name']]);
+            }
+            
+            // Update prenatal record (excluding name as it's handled above)
+            $prenatalData = $validatedData;
+            unset($prenatalData['name']);
+            $prenatalData['birth_plan'] = $validatedData['service']; // Map service to birth_plan
+            unset($prenatalData['service']);
+            
+            $prenatalRecord->update($prenatalData);
 
-        return redirect()->route('staff.prenatal-record.index')->with('success', 'Prenatal record updated successfully.');
+            return redirect()->route('staff.prenatal-record.index')->with('success', 'Prenatal record updated successfully.');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error updating record: ' . $e->getMessage())->withInput();
+        }
     }
     public function destroy($id)
     {

@@ -17,7 +17,16 @@ class UrinalysisController extends Controller
 
     public function create()
     {
-        $appointments = Appointment::all();
+        // Only get appointments with urinalysis-related services
+        $appointments = Appointment::where(function($query) {
+            $query->where('service', 'LIKE', '%urinalysis%')
+                  ->orWhere('service', 'LIKE', '%urine%')
+                  ->orWhere('service', 'LIKE', '%laboratory%')
+                  ->orWhere('service', 'LIKE', '%lab%')
+                  ->orWhere('service', '=', 'Urinalysis')
+                  ->orWhere('service', '=', 'Laboratory')
+                  ->orWhere('service', '=', 'Urine Test');
+        })->get();
         return view('admin.urinalysis-results.create', compact('appointments'));
     }
 
@@ -80,7 +89,16 @@ class UrinalysisController extends Controller
     public function edit($id)
     {
         $urinalysisResult = UrinalysisResult::findOrFail($id);
-        $appointments = Appointment::all();
+        // Only get appointments with urinalysis-related services
+        $appointments = Appointment::where(function($query) {
+            $query->where('service', 'LIKE', '%urinalysis%')
+                  ->orWhere('service', 'LIKE', '%urine%')
+                  ->orWhere('service', 'LIKE', '%laboratory%')
+                  ->orWhere('service', 'LIKE', '%lab%')
+                  ->orWhere('service', '=', 'Urinalysis')
+                  ->orWhere('service', '=', 'Laboratory')
+                  ->orWhere('service', '=', 'Urine Test');
+        })->get();
         return view('admin.urinalysis-results.edit', compact('urinalysisResult', 'appointments'));
     }
 

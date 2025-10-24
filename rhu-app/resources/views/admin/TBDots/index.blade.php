@@ -37,7 +37,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tbdotsTableBody">
                             @forelse($tbdots as $case)
                                 <tr>
                                     <td>{{ $case->patient_name ?: optional($case->patient)->name ?: 'N/A' }}</td>
@@ -63,3 +63,33 @@
     </div>
 </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Client-side filter for TBDOTS Cases
+    $(document).ready(function () {
+        const $input = $('#searchInput');
+        const $tbody = $('#tbdotsTableBody');
+        const $count = $('#tbdotsCount');
+
+        if ($input.length && $tbody.length) {
+            $input.on('input', function () {
+                const q = $(this).val().toLowerCase().trim();
+                let visibleCount = 0;
+                
+                $tbody.find('tr').each(function () {
+                    const text = $(this).text().toLowerCase();
+                    const isVisible = text.indexOf(q) !== -1;
+                    $(this).toggle(isVisible);
+                    
+                    if (isVisible && !$(this).find('td[colspan]').length) {
+                        visibleCount++;
+                    }
+                });
+                
+                // Update the count
+                $count.text(visibleCount);
+            });
+        }
+    });
+</script>

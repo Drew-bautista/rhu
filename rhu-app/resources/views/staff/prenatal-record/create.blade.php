@@ -95,8 +95,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="blood_pressure"><strong>Blood Pressure</strong></label>
-                                    <input name="blood_pressure" id="blood_pressure" class="form-control form-control-sm"
-                                        value="{{ old(key: 'blood_pressure') }}"">
+                                    <input type="text" name="blood_pressure" id="blood_pressure" class="form-control form-control-sm"
+                                        placeholder="120/80" value="{{ old('blood_pressure') }}" required>
+                                    <small class="text-muted">Format: systolic/diastolic (e.g., 120/80)</small>
                                 </div>
                             </div>
 

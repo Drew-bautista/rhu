@@ -10,7 +10,7 @@
             </div>
 
             {{-- Filter Section --}}
-            <div class="card mb-4">
+            <div class="card mb-4 no-print">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0"><i class="fas fa-filter"></i> Filter Reports</h5>
                 </div>

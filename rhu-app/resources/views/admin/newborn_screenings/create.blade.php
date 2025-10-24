@@ -15,12 +15,28 @@
                         </div>
                         <br>
                         @if ($errors->any())
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <h6><i class="fas fa-exclamation-triangle me-2"></i><strong>Please fix the following errors:</strong></h6>
                                 <ul class="mb-0">
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
                                 </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if(session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-times-circle me-2"></i>{{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
 
@@ -184,3 +200,125 @@
         </div>
     </div>
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    
+    // Add real-time validation
+    form.addEventListener('submit', function(e) {
+        let hasErrors = false;
+        const errors = [];
+        
+        // Validate required fields
+        const requiredFields = [
+            { name: 'first_name', label: 'Child\'s First Name' },
+            { name: 'last_name', label: 'Child\'s Last Name' },
+            { name: 'sex', label: 'Sex' },
+            { name: 'date_of_birth', label: 'Date of Birth' },
+            { name: 'mother_first_name', label: 'Mother\'s First Name' },
+            { name: 'mother_last_name', label: 'Mother\'s Last Name' },
+            { name: 'screening_date', label: 'Screening Date' },
+            { name: 'result_status', label: 'Result Status' }
+        ];
+        
+        requiredFields.forEach(field => {
+            const input = form.querySelector(`[name="${field.name}"]`);
+            if (input && !input.value.trim()) {
+                errors.push(`${field.label} is required.`);
+                input.classList.add('is-invalid');
+                hasErrors = true;
+            } else if (input) {
+                input.classList.remove('is-invalid');
+            }
+        });
+        
+        // Validate names (letters and spaces only)
+        const nameFields = ['first_name', 'middle_name', 'last_name', 'mother_first_name', 'mother_middle_name', 'mother_last_name'];
+        nameFields.forEach(fieldName => {
+            const input = form.querySelector(`[name="${fieldName}"]`);
+            if (input && input.value.trim()) {
+                const nameRegex = /^[a-zA-Z\s]+$/;
+                if (!nameRegex.test(input.value)) {
+                    errors.push(`${fieldName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} should only contain letters and spaces.`);
+                    input.classList.add('is-invalid');
+                    hasErrors = true;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            }
+        });
+        
+        // Validate dates (not in future)
+        const dateFields = ['date_of_birth', 'screening_date', 'sample_collection_at'];
+        const today = new Date().toISOString().split('T')[0];
+        dateFields.forEach(fieldName => {
+            const input = form.querySelector(`[name="${fieldName}"]`);
+            if (input && input.value && input.value > today) {
+                errors.push(`${fieldName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} cannot be in the future.`);
+                input.classList.add('is-invalid');
+                hasErrors = true;
+            } else if (input) {
+                input.classList.remove('is-invalid');
+            }
+        });
+        
+        // Validate birth weight
+        const birthWeight = form.querySelector('[name="birth_weight"]');
+        if (birthWeight && birthWeight.value) {
+            const weight = parseFloat(birthWeight.value);
+            if (isNaN(weight) || weight < 0.5 || weight > 10) {
+                errors.push('Birth weight must be between 0.5 and 10 kg.');
+                birthWeight.classList.add('is-invalid');
+                hasErrors = true;
+            } else {
+                birthWeight.classList.remove('is-invalid');
+            }
+        }
+        
+        // Validate mother's age
+        const motherAge = form.querySelector('[name="mother_age"]');
+        if (motherAge && motherAge.value) {
+            const age = parseInt(motherAge.value);
+            if (isNaN(age) || age < 12 || age > 60) {
+                errors.push('Mother\'s age must be between 12 and 60 years.');
+                motherAge.classList.add('is-invalid');
+                hasErrors = true;
+            } else {
+                motherAge.classList.remove('is-invalid');
+            }
+        }
+        
+        // Show errors if any
+        if (hasErrors) {
+            e.preventDefault();
+            
+            // Create or update error alert
+            let errorAlert = document.querySelector('.validation-errors');
+            if (!errorAlert) {
+                errorAlert = document.createElement('div');
+                errorAlert.className = 'alert alert-danger alert-dismissible fade show validation-errors';
+                errorAlert.innerHTML = `
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i><strong>Please fix the following errors:</strong></h6>
+                    <ul class="mb-0" id="error-list"></ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                form.insertBefore(errorAlert, form.firstChild);
+            }
+            
+            const errorList = errorAlert.querySelector('#error-list');
+            errorList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+            
+            // Scroll to top to show errors
+            errorAlert.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+    
+    // Remove validation classes on input
+    form.addEventListener('input', function(e) {
+        if (e.target.classList.contains('is-invalid')) {
+            e.target.classList.remove('is-invalid');
+        }
+    });
+});
+</script>

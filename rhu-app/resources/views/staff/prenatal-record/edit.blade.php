@@ -23,11 +23,27 @@
                 <!-- Display validation errors -->
                 @if ($errors->any())
                     <div class="alert alert-danger">
-                        <ul>
+                        <ul class="mb-0">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
+                    </div>
+                @endif
+
+                {{-- Display success message --}}
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                {{-- Display error message --}}
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
 
@@ -42,7 +58,7 @@
                                 <label for="name">Name</label>
                                 <input type="text" name="name" id="name" class="form-control"
                                     placeholder="John Doe" value="{{ old('name', $prenatalRecord->appointments->name) }}"
-                                    readonly>
+                                    required>
                             </div>
                         </div>
 
@@ -73,9 +89,10 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="contact_number">Blood Pressure</label>
+                                <label for="blood_pressure">Blood Pressure</label>
                                 <input type="text" name="blood_pressure" id="blood_pressure" class="form-control"
-                                    value="{{ old('blood_pressure', $prenatalRecord->blood_pressure) }}" required>
+                                    placeholder="120/80" value="{{ old('blood_pressure', $prenatalRecord->blood_pressure) }}" required>
+                                <small class="text-muted">Format: systolic/diastolic (e.g., 120/80)</small>
                             </div>
                         </div>
                         <div class="col-md-6">

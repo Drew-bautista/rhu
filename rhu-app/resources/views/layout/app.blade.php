@@ -231,6 +231,97 @@
         .close-btn:active {
             transform: scale(0.9);
         }
+
+        /* Print Styles - Hide UI elements when printing */
+        @media print {
+            /* Hide sidebar/navigation */
+            .sidenav {
+                display: none !important;
+            }
+            
+            /* Hide header/navbar */
+            .navbar,
+            .nav,
+            .header,
+            .top-nav {
+                display: none !important;
+            }
+            
+            /* Hide buttons and action elements */
+            .btn,
+            button,
+            .dropdown,
+            .dropdown-btn,
+            .dropdown-container,
+            .action-buttons,
+            .actions {
+                display: none !important;
+            }
+            
+            /* Hide search bars and filters */
+            .search-bar,
+            .filter,
+            input[type="search"],
+            .searchBar {
+                display: none !important;
+            }
+            
+            /* Hide pagination */
+            .pagination,
+            .page-links {
+                display: none !important;
+            }
+            
+            /* Adjust main content for print */
+            .main {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            
+            /* Ensure content takes full width */
+            .container,
+            .container-fluid {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            /* Hide shadows and borders for cleaner print */
+            .shadow,
+            .card {
+                box-shadow: none !important;
+                border: none !important;
+            }
+            
+            /* Optimize table printing */
+            table {
+                width: 100% !important;
+                font-size: 12px !important;
+            }
+            
+            /* Hide specific elements by class */
+            .no-print,
+            .hide-print {
+                display: none !important;
+            }
+            
+            /* Show only printable content */
+            .print-only {
+                display: block !important;
+            }
+            
+            /* Adjust page margins */
+            @page {
+                margin: 0.5in;
+            }
+            
+            /* Prevent page breaks inside important elements */
+            .patient-info,
+            .report-section {
+                page-break-inside: avoid;
+            }
+        }
     </style>
 </head>
 
@@ -333,6 +424,33 @@
                 }
             }
         };
+
+        // Print Helper Function
+        function printPage() {
+            // Add print-specific title if needed
+            const originalTitle = document.title;
+            const pageTitle = document.querySelector('h1');
+            if (pageTitle) {
+                document.title = pageTitle.textContent + ' - RHU Gabaldon';
+            }
+            
+            // Print the page
+            window.print();
+            
+            // Restore original title
+            document.title = originalTitle;
+        }
+
+        // Add print button functionality to all print buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const printButtons = document.querySelectorAll('[onclick*="window.print"]');
+            printButtons.forEach(button => {
+                button.onclick = function(e) {
+                    e.preventDefault();
+                    printPage();
+                };
+            });
+        });
     </script>
 </body>
 

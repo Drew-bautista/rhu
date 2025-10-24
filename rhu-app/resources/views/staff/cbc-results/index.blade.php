@@ -26,7 +26,7 @@
 
                 <div class="card-body">
                     <div class="table table-responsive">
-                        <table class="table table-hover" id="appointmentTable" width="100%" cellspacing="0">
+                        <table class="table table-hover" id="cbcResultsTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr class="table-light">
                                     <th>Name</th>
@@ -39,7 +39,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="appointmentTableBody">
+                            <tbody id="cbcResultsTableBody">
                                 @forelse($cbcResults as $cbcResult)
                                     <tr>
                                         <td>
@@ -87,48 +87,34 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // Search functionality for appointments
-    $(document).ready(function() {
-        $('#searchInput').on('keyup', function() {
-            let query = $(this).val();
+    // Client-side filter for CBC Results
+    $(document).ready(function () {
+        const $input = $('#searchInput');
+        const $tbody = $('#cbcResultsTableBody');
+        const $count = $('#appointmentCount');
 
-            $.ajax({
-                url: "/appointments/search",
-                type: 'GET',
-                data: {
-                    search: query
-                },
-                success: function(data) {
-                    let tableBody = $('#appointmentTableBody');
-                    let appointmentCount = $('#appointmentCount');
-                    tableBody.empty();
-
-                    if (data.length > 0) {
-                        $.each(data, function(index, appointment) {
-                            let row = `<tr>
-                                    <td>${appointment.patient.firstname} ${appointment.patient.lastname}</td>
-                                    <td>${appointment.appointment_date}</td>
-                                    <td>${appointment.appointment_time}</td>
-                                    <td>${appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}</td>
-                                    <td>
-                                        <a href="/appointments/${appointment.id}" class="btn btn-primary btn-sm">View</a>
-                                        <a href="/appointments/${appointment.id}/edit" class="btn btn-secondary btn-sm">Edit</a>
-                                    </td>
-                                </tr>`;
-                            tableBody.append(row);
-                        });
-                        appointmentCount.text(data.length);
-                    } else {
-                        tableBody.append(
-                            '<tr><td colspan="5" class="text-center text-muted">No appointments found.</td></tr>'
-                        );
-                        appointmentCount.text('0');
+        if ($input.length && $tbody.length) {
+            $input.on('input', function () {
+                const q = $(this).val().toLowerCase().trim();
+                let visibleCount = 0;
+                
+                $tbody.find('tr').each(function () {
+                    const text = $(this).text().toLowerCase();
+                    const isVisible = text.indexOf(q) !== -1;
+                    $(this).toggle(isVisible);
+                    
+                    if (isVisible && !$(this).find('td[colspan]').length) {
+                        visibleCount++;
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
-                }
+                });
+                
+                // Update the count
+                $count.text(visibleCount);
             });
-        });
+        }
+        
+        // Initialize count
+        const initialCount = $tbody.find('tr').not(':has(td[colspan])').length;
+        $count.text(initialCount);
     });
 </script>

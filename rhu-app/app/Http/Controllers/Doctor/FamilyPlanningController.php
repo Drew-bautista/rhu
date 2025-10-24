@@ -13,7 +13,7 @@ class FamilyPlanningController extends Controller
      */
     public function index()
     {
-        $familyPlannings = FamilyPlanning::with('appointments')->latest()->get();
+        $familyPlannings = FamilyPlanning::latest()->get();
         return view('admin.family-planning.index', compact('familyPlannings'));
     }
 
@@ -64,23 +64,27 @@ class FamilyPlanningController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $familyPlanning = FamilyPlanning::findOrFail($id);
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'age' => 'required|integer|min:0|max:120',
-            'contact' => 'required|string|max:20',
-            'address' => 'required|string|max:255',
-            // 'date_of_visit' => 'required|date',
-            'fp_counseling' => 'required|string|max:255',
-            'fp_commodity' => 'required|string|max:255',
-            'facility' => 'required|string|max:255',
-            'date_of_follow_up' => 'required|date',
-        ]);
+        try {
+            $familyPlanning = FamilyPlanning::findOrFail($id);
+            
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'age' => 'required|integer|min:0|max:120',
+                'contact' => 'required|string|max:20',
+                'address' => 'required|string|max:255',
+                'fp_counseling' => 'required|string|max:255',
+                'fp_commodity' => 'required|string|max:255',
+                'facility' => 'required|string|max:255',
+                'date_of_follow_up' => 'required|date',
+            ]);
 
+            $familyPlanning->update($validatedData);
 
-        $familyPlanning->update($validatedData);
-
-        return redirect()->route('admin.family-planning.index')->with('success', 'Family Planning data updated successfully.');
+            return redirect()->route('admin.family-planning.index')->with('success', 'Family Planning data updated successfully.');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error updating record: ' . $e->getMessage())->withInput();
+        }
     }
 
 

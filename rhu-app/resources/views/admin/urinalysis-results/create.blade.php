@@ -44,7 +44,7 @@
                                                     data-contact-number="{{ $appointment->contact_number }}"
                                                     data-address="{{ $appointment->address }}"
                                                     data-service="{{ $appointment->service }}">
-                                                    {{ $appointment->name }}
+                                                    {{ $appointment->name }} - {{ $appointment->service }}
                                                 </option>
                                             @endif
                                         @endforeach
