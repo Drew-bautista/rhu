@@ -303,9 +303,10 @@
                         <a class="dropdown-btn" href="{{ route('admin.family-planning.index') }}">
                             <i class='bx bx-heart-circle'></i> Family Planning
                         </a>
-                        <a class="dropdown-btn" href="{{ route('admin.birth-certificates.index') }}">
+                        {{-- Temporarily disabled until migration is run --}}
+                        {{-- <a class="dropdown-btn" href="{{ route('admin.birth-certificates.index') }}">
                             <i class='bx bx-certification'></i> Birth Certificate
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
                 
@@ -407,9 +408,10 @@
                         <a class="dropdown-btn" href="{{ route('staff.family-planning.index') }}">
                             <i class='bx bx-heart-circle'></i> Family Planning
                         </a>
-                        <a class="dropdown-btn" href="{{ route('staff.birth-certificates.index') }}">
+                        {{-- Temporarily disabled until migration is run --}}
+                        {{-- <a class="dropdown-btn" href="{{ route('staff.birth-certificates.index') }}">
                             <i class='bx bx-certification'></i> Birth Certificate
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
                 
