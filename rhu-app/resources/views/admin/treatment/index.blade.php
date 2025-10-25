@@ -36,7 +36,7 @@
                                 <th>Chief Complaint</th>
                                 <th>Assessment & Diagnosis</th>
                                 <th>Medication & Treatment</th>
-                                {{-- <th>Actions</th> --}}
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -50,8 +50,11 @@
                                     </td>
                                     <td>{{ $treatment->chief_complaint }}</td>
                                     <td>{{ $treatment->assessment_diagnosis }}</td>
-                                    <td>{{ $treatment->medication_treatment }}</td>
-                                    {{-- <td>
+                                    <td>
+                                        {{ $treatment->medication_treatment ?: 'No medication/treatment recorded' }}
+                                        {{-- DEBUG: {{ $treatment->medication_treatment ?? 'NULL' }} --}}
+                                    </td>
+                                    <td>
                                         <a href="{{ route('admin.treatment.show', $treatment->id) }}"
                                             class="btn btn-info btn-sm">View</a>
                                         <a href="{{ route('admin.treatment.edit', $treatment->id) }}"
@@ -61,8 +64,8 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you sure you want to delete this treatment?')">Delete</button> --}}
-                                    </form>
+                                                onclick="return confirm('Are you sure you want to delete this treatment?')">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty

@@ -664,10 +664,6 @@
 </head>
 
 <body>
-    @php
-        use Carbon\Carbon;
-        $isExpired = Carbon::now()->gt('2025-10-31');
-    @endphp
     
     <!-- Animated Background -->
     <div class="bg-animation">

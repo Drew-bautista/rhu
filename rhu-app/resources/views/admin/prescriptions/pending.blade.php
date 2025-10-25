@@ -58,77 +58,75 @@
                             </thead>
                             <tbody id="prescriptionTableBody">
                                 @forelse($prescriptions as $prescription)
-                                    <tr class="{{ $prescription->inventory->quantity_in_stock < $prescription->quantity_prescribed ? 'table-danger' : '' }}">
-                                        <td>{{ $prescription->created_at->format('M d, Y h:i A') }}</td>
-                                        <td>
-                                            <strong>{{ $prescription->patient_name }}</strong>
-                                            @if($prescription->appointment)
-                                                <br><small class="text-muted">{{ $prescription->appointment->contact_number }}</small>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <strong>{{ $prescription->inventory->medicine_name }}</strong><br>
-                                            <small class="text-muted">{{ $prescription->inventory->generic_name }}</small><br>
-                                            <small class="text-info">{{ $prescription->inventory->dosage_strength }}</small>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-primary">{{ $prescription->quantity_prescribed }} {{ $prescription->inventory->unit_of_measure }}</span>
-                                        </td>
-                                        <td>
-                                            @if($prescription->inventory->quantity_in_stock >= $prescription->quantity_prescribed)
-                                                <span class="badge bg-success">{{ $prescription->inventory->quantity_in_stock }} {{ $prescription->inventory->unit_of_measure }}</span>
-                                            @else
-                                                <span class="badge bg-danger">{{ $prescription->inventory->quantity_in_stock }} {{ $prescription->inventory->unit_of_measure }}</span>
-                                                <br><small class="text-danger">Insufficient Stock!</small>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            {{ $prescription->dosage_instructions }}<br>
-                                            <small class="text-muted">Duration: {{ $prescription->duration_days }} days</small>
-                                            @if($prescription->special_instructions)
-                                                <br><small class="text-info">{{ $prescription->special_instructions }}</small>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($prescription->prescribedBy)
-                                                {{ $prescription->prescribedBy->firstname }} {{ $prescription->prescribedBy->lastname }}
-                                            @else
-                                                N/A
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('admin.prescriptions.show', $prescription->id) }}" 
-                                                class="btn btn-info btn-sm mb-1" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            
-                                            @if($prescription->inventory->quantity_in_stock >= $prescription->quantity_prescribed)
-                                                <form action="{{ route('admin.prescriptions.dispense', $prescription->id) }}" 
+                                    @foreach($prescription->prescriptionItems as $item)
+                                        <tr class="{{ $item->medicine->current_stock < $item->quantity ? 'table-danger' : '' }}">
+                                            <td>{{ $prescription->created_at->format('M d, Y h:i A') }}</td>
+                                            <td>
+                                                <strong>{{ $prescription->patient_name }}</strong>
+                                                @if($prescription->appointment)
+                                                    <br><small class="text-muted">{{ $prescription->appointment->contact_number ?? 'N/A' }}</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <strong>{{ $item->medicine->medicine_name }}</strong><br>
+                                                <small class="text-muted">{{ $item->medicine->generic_name ?? 'N/A' }}</small><br>
+                                                <small class="text-info">{{ $item->medicine->dosage_strength ?? 'N/A' }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary">{{ $item->quantity }} {{ $item->medicine->unit_of_measure ?? 'pcs' }}</span>
+                                            </td>
+                                            <td>
+                                                @if($item->medicine->current_stock >= $item->quantity)
+                                                    <span class="badge bg-success">{{ $item->medicine->current_stock }} {{ $item->medicine->unit_of_measure ?? 'pcs' }}</span>
+                                                @else
+                                                    <span class="badge bg-danger">{{ $item->medicine->current_stock }} {{ $item->medicine->unit_of_measure ?? 'pcs' }}</span>
+                                                    <br><small class="text-danger">Insufficient Stock!</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                {{ $item->dosage }} - {{ $item->frequency }}<br>
+                                                <small class="text-muted">Duration: {{ $item->duration }}</small>
+                                                @if($item->instructions)
+                                                    <br><small class="text-info">{{ $item->instructions }}</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                {{ $prescription->doctor_name ?? 'N/A' }}
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('admin.prescriptions.show', $prescription->id) }}" 
+                                                    class="btn btn-info btn-sm mb-1" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                
+                                                @if($item->medicine->current_stock >= $item->quantity)
+                                                    <form action="{{ route('admin.prescriptions.dispense', $prescription->id) }}" 
+                                                        method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="btn btn-success btn-sm mb-1" 
+                                                            title="Dispense Medicine" onclick="return confirm('Dispense this prescription?')">
+                                                            <i class="fas fa-check"></i> Dispense
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <button class="btn btn-secondary btn-sm mb-1" disabled title="Insufficient Stock">
+                                                        <i class="fas fa-exclamation-triangle"></i> No Stock
+                                                    </button>
+                                                @endif
+                                                
+                                                <form action="{{ route('admin.prescriptions.cancel', $prescription->id) }}" 
                                                     method="POST" style="display: inline;">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="submit" class="btn btn-success btn-sm mb-1" 
-                                                        title="Dispense Medicine" onclick="return confirm('Dispense this prescription?')">
-                                                        <i class="fas fa-check"></i> Dispense
+                                                    <button type="submit" class="btn btn-danger btn-sm mb-1" 
+                                                        title="Cancel Prescription" onclick="return confirm('Cancel this prescription?')">
+                                                        <i class="fas fa-times"></i> Cancel
                                                     </button>
                                                 </form>
-                                            @else
-                                                <button class="btn btn-secondary btn-sm mb-1" disabled title="Insufficient Stock">
-                                                    <i class="fas fa-exclamation-triangle"></i> No Stock
-                                                </button>
-                                            @endif
-                                            
-                                            <form action="{{ route('admin.prescriptions.cancel', $prescription->id) }}" 
-                                                method="POST" style="display: inline;">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-danger btn-sm mb-1" 
-                                                    title="Cancel Prescription" onclick="return confirm('Cancel this prescription?')">
-                                                    <i class="fas fa-times"></i> Cancel
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 @empty
                                     <tr>
                                         <td colspan="8" class="text-center">

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Doctor;
 
 use App\Http\Controllers\Controller;
-use App\Models\Inventory;
+use App\Models\Medicine;
 use App\Models\Prescription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,9 +12,12 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $inventory = Inventory::latest()->get();
-        $lowStockItems = Inventory::whereColumn('quantity_in_stock', '<=', 'reorder_level')->get();
-        return view('admin.inventory.index', compact('inventory', 'lowStockItems'));
+        $medicines = Medicine::all();
+        $lowStockItems = Medicine::whereRaw('current_stock <= minimum_stock')->get();
+        $expiredItems = Medicine::where('expiry_date', '<', now())->get();
+        $outOfStockItems = Medicine::where('current_stock', '<=', 0)->get();
+        
+        return view('admin.inventory.index', compact('medicines', 'lowStockItems', 'expiredItems', 'outOfStockItems'));
     }
 
     public function create()
@@ -28,115 +31,121 @@ class InventoryController extends Controller
             'medicine_name' => 'required|string|max:255',
             'generic_name' => 'nullable|string|max:255',
             'brand_name' => 'nullable|string|max:255',
-            'medicine_type' => 'required|in:tablet,capsule,syrup,injection,cream,drops,inhaler,other',
-            'dosage_strength' => 'required|string',
-            'quantity_in_stock' => 'required|integer|min:0',
-            'reorder_level' => 'required|integer|min:0',
-            'unit_of_measure' => 'required|string',
-            'expiry_date' => 'nullable|date',
+            'description' => 'nullable|string',
+            'dosage_form' => 'required|in:tablet,capsule,syrup,injection,cream,drops,inhaler,ointment,powder,other',
+            'strength' => 'required|string',
+            'unit' => 'required|string',
+            'current_stock' => 'required|integer|min:0',
+            'minimum_stock' => 'required|integer|min:0',
+            'maximum_stock' => 'required|integer|min:1',
+            'unit_price' => 'required|numeric|min:0',
+            'category' => 'nullable|string',
+            'classification' => 'required|in:Prescription,OTC',
+            'expiry_date' => 'nullable|date|after:today',
             'batch_number' => 'nullable|string',
-            'supplier' => 'nullable|string',
-            'storage_location' => 'nullable|string',
+            'manufacturer' => 'nullable|string',
+            'status' => 'required|in:Active,Inactive',
             'notes' => 'nullable|string'
         ]);
 
-        Inventory::create($validated);
+        Medicine::create($validated);
 
         return redirect()->route('admin.inventory.index')
             ->with('success', 'Medicine added to inventory successfully.');
     }
 
-    public function show(Inventory $inventory)
+    public function show(Medicine $medicine)
     {
-        $prescriptions = $inventory->prescriptions()->with(['appointment', 'prescribedBy', 'dispensedBy'])->latest()->get();
-        return view('admin.inventory.show', compact('inventory', 'prescriptions'));
+        $prescriptionItems = $medicine->prescriptionItems()->with(['prescription.appointment'])->latest()->get();
+        return view('admin.inventory.show', compact('medicine', 'prescriptionItems'));
     }
 
-    public function edit(Inventory $inventory)
+    public function edit(Medicine $medicine)
     {
-        return view('admin.inventory.edit', compact('inventory'));
+        return view('admin.inventory.edit', compact('medicine'));
     }
 
-    public function update(Request $request, Inventory $inventory)
+    public function update(Request $request, Medicine $medicine)
     {
         try {
             $validated = $request->validate([
                 'medicine_name' => 'required|string|max:255',
                 'generic_name' => 'nullable|string|max:255',
                 'brand_name' => 'nullable|string|max:255',
-                'medicine_type' => 'required|in:tablet,capsule,syrup,injection,cream,drops,inhaler,other',
-                'dosage_strength' => 'required|string',
-                'quantity_in_stock' => 'required|integer|min:0',
-                'reorder_level' => 'required|integer|min:0',
-                'unit_of_measure' => 'required|string',
+                'description' => 'nullable|string',
+                'dosage_form' => 'required|in:tablet,capsule,syrup,injection,cream,drops,inhaler,ointment,powder,other',
+                'strength' => 'required|string',
+                'unit' => 'required|string',
+                'current_stock' => 'required|integer|min:0',
+                'minimum_stock' => 'required|integer|min:0',
+                'maximum_stock' => 'required|integer|min:1',
+                'unit_price' => 'required|numeric|min:0',
+                'category' => 'nullable|string',
+                'classification' => 'required|in:Prescription,OTC',
                 'expiry_date' => 'nullable|date',
                 'batch_number' => 'nullable|string',
-                'supplier' => 'nullable|string',
-                'storage_location' => 'nullable|string',
+                'manufacturer' => 'nullable|string',
+                'status' => 'required|in:Active,Inactive',
                 'notes' => 'nullable|string'
             ]);
 
-            $inventory->update($validated);
+            $medicine->update($validated);
 
             return redirect()->route('admin.inventory.index')
-                ->with('success', 'Inventory updated successfully.');
+                ->with('success', 'Medicine updated successfully.');
         } catch (\Exception $e) {
-            \Log::error('Inventory Update Error: ' . $e->getMessage());
+            \Log::error('Medicine Update Error: ' . $e->getMessage());
             return redirect()->back()
-                ->with('error', 'Unable to update inventory. Please try again.')
+                ->with('error', 'Unable to update medicine. Please try again.')
                 ->withInput();
         }
     }
 
-    public function destroy(Inventory $inventory)
+    public function destroy(Medicine $medicine)
     {
-        if ($inventory->prescriptions()->exists()) {
+        if ($medicine->prescriptionItems()->exists()) {
             return redirect()->route('admin.inventory.index')
                 ->with('error', 'Cannot delete medicine with existing prescriptions.');
         }
 
-        $inventory->delete();
+        $medicine->delete();
         return redirect()->route('admin.inventory.index')
             ->with('success', 'Medicine removed from inventory.');
     }
 
-    public function prescribe(Request $request)
+    public function adjustStock(Request $request, Medicine $medicine)
     {
         $validated = $request->validate([
-            'appointment_id' => 'required|exists:appointments,id',
-            'inventory_id' => 'required|exists:inventory,id',
-            'patient_name' => 'required|string',
-            'quantity_prescribed' => 'required|integer|min:1',
-            'dosage_instructions' => 'required|string',
-            'duration_days' => 'required|integer|min:1',
-            'special_instructions' => 'nullable|string'
+            'adjustment_type' => 'required|in:add,subtract',
+            'quantity' => 'required|integer|min:1',
+            'reason' => 'required|string|max:255'
         ]);
 
-        DB::transaction(function () use ($validated) {
-            $inventory = Inventory::findOrFail($validated['inventory_id']);
-            
-            // Check if enough stock
-            if ($inventory->quantity_in_stock < $validated['quantity_prescribed']) {
-                throw new \Exception('Insufficient stock for this medicine.');
-            }
+        try {
+            DB::transaction(function () use ($medicine, $validated) {
+                if ($validated['adjustment_type'] === 'add') {
+                    $medicine->increment('current_stock', $validated['quantity']);
+                } else {
+                    if ($medicine->current_stock < $validated['quantity']) {
+                        throw new \Exception('Cannot subtract more than current stock.');
+                    }
+                    $medicine->decrement('current_stock', $validated['quantity']);
+                }
+                
+                // Update status based on stock level
+                if ($medicine->current_stock <= 0) {
+                    $medicine->update(['status' => 'Out of Stock']);
+                } elseif ($medicine->status === 'Out of Stock' && $medicine->current_stock > 0) {
+                    $medicine->update(['status' => 'Active']);
+                }
+            });
 
-            // Create prescription
-            $prescription = Prescription::create([
-                'appointment_id' => $validated['appointment_id'],
-                'inventory_id' => $validated['inventory_id'],
-                'prescribed_by' => auth()->id(),
-                'patient_name' => $validated['patient_name'],
-                'quantity_prescribed' => $validated['quantity_prescribed'],
-                'dosage_instructions' => $validated['dosage_instructions'],
-                'duration_days' => $validated['duration_days'],
-                'special_instructions' => $validated['special_instructions'] ?? null,
-                'status' => 'pending'
-            ]);
-
-            // Update inventory stock
-            $inventory->decrement('quantity_in_stock', $validated['quantity_prescribed']);
-        });
-
-        return back()->with('success', 'Prescription created and inventory updated.');
+            return redirect()->route('admin.inventory.index')
+                ->with('success', 'Stock adjusted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', $e->getMessage())
+                ->withInput();
+        }
     }
 }

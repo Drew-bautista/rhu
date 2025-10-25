@@ -48,20 +48,22 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="medicine_type" class="form-label">Medicine Type <span class="text-danger">*</span></label>
-                                    <select class="form-control @error('medicine_type') is-invalid @enderror" 
-                                            id="medicine_type" name="medicine_type" required>
-                                        <option value="">-- Select Type --</option>
-                                        <option value="tablet" {{ old('medicine_type') == 'tablet' ? 'selected' : '' }}>Tablet</option>
-                                        <option value="capsule" {{ old('medicine_type') == 'capsule' ? 'selected' : '' }}>Capsule</option>
-                                        <option value="syrup" {{ old('medicine_type') == 'syrup' ? 'selected' : '' }}>Syrup</option>
-                                        <option value="injection" {{ old('medicine_type') == 'injection' ? 'selected' : '' }}>Injection</option>
-                                        <option value="cream" {{ old('medicine_type') == 'cream' ? 'selected' : '' }}>Cream/Ointment</option>
-                                        <option value="drops" {{ old('medicine_type') == 'drops' ? 'selected' : '' }}>Drops</option>
-                                        <option value="inhaler" {{ old('medicine_type') == 'inhaler' ? 'selected' : '' }}>Inhaler</option>
-                                        <option value="other" {{ old('medicine_type') == 'other' ? 'selected' : '' }}>Other</option>
+                                    <label for="dosage_form" class="form-label">Dosage Form <span class="text-danger">*</span></label>
+                                    <select class="form-control @error('dosage_form') is-invalid @enderror" 
+                                            id="dosage_form" name="dosage_form" required>
+                                        <option value="">-- Select Form --</option>
+                                        <option value="tablet" {{ old('dosage_form') == 'tablet' ? 'selected' : '' }}>Tablet</option>
+                                        <option value="capsule" {{ old('dosage_form') == 'capsule' ? 'selected' : '' }}>Capsule</option>
+                                        <option value="syrup" {{ old('dosage_form') == 'syrup' ? 'selected' : '' }}>Syrup</option>
+                                        <option value="injection" {{ old('dosage_form') == 'injection' ? 'selected' : '' }}>Injection</option>
+                                        <option value="cream" {{ old('dosage_form') == 'cream' ? 'selected' : '' }}>Cream</option>
+                                        <option value="ointment" {{ old('dosage_form') == 'ointment' ? 'selected' : '' }}>Ointment</option>
+                                        <option value="drops" {{ old('dosage_form') == 'drops' ? 'selected' : '' }}>Drops</option>
+                                        <option value="inhaler" {{ old('dosage_form') == 'inhaler' ? 'selected' : '' }}>Inhaler</option>
+                                        <option value="powder" {{ old('dosage_form') == 'powder' ? 'selected' : '' }}>Powder</option>
+                                        <option value="other" {{ old('dosage_form') == 'other' ? 'selected' : '' }}>Other</option>
                                     </select>
-                                    @error('medicine_type')
+                                    @error('dosage_form')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -69,21 +71,43 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="dosage_strength" class="form-label">Dosage Strength <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('dosage_strength') is-invalid @enderror" 
-                                           id="dosage_strength" name="dosage_strength" value="{{ old('dosage_strength') }}"
+                                    <label for="strength" class="form-label">Strength <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('strength') is-invalid @enderror" 
+                                           id="strength" name="strength" value="{{ old('strength') }}"
                                            placeholder="e.g., 500mg, 250mg/5ml" required>
-                                    @error('dosage_strength')
+                                    @error('strength')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="unit_of_measure" class="form-label">Unit of Measure <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('unit_of_measure') is-invalid @enderror" 
-                                           id="unit_of_measure" name="unit_of_measure" value="{{ old('unit_of_measure') }}"
+                                    <label for="unit" class="form-label">Unit <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('unit') is-invalid @enderror" 
+                                           id="unit" name="unit" value="{{ old('unit') }}"
                                            placeholder="e.g., pieces, bottles, boxes" required>
-                                    @error('unit_of_measure')
+                                    @error('unit')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control @error('description') is-invalid @enderror" 
+                                              id="description" name="description" rows="3" 
+                                              placeholder="Medicine description or notes">{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <input type="text" class="form-control @error('category') is-invalid @enderror" 
+                                           id="category" name="category" value="{{ old('category') }}"
+                                           placeholder="e.g., Analgesic, Antibiotic, Vitamin">
+                                    @error('category')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -94,26 +118,74 @@
 
                             <div class="row">
                                 <div class="col-md-4 mb-3">
-                                    <label for="quantity_in_stock" class="form-label">Quantity in Stock <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control @error('quantity_in_stock') is-invalid @enderror" 
-                                           id="quantity_in_stock" name="quantity_in_stock" value="{{ old('quantity_in_stock', 0) }}"
+                                    <label for="current_stock" class="form-label">Current Stock <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control @error('current_stock') is-invalid @enderror" 
+                                           id="current_stock" name="current_stock" value="{{ old('current_stock', 0) }}"
                                            min="0" required>
-                                    @error('quantity_in_stock')
+                                    @error('current_stock')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <label for="reorder_level" class="form-label">Reorder Level <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control @error('reorder_level') is-invalid @enderror" 
-                                           id="reorder_level" name="reorder_level" value="{{ old('reorder_level', 10) }}"
+                                    <label for="minimum_stock" class="form-label">Minimum Stock <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control @error('minimum_stock') is-invalid @enderror" 
+                                           id="minimum_stock" name="minimum_stock" value="{{ old('minimum_stock', 10) }}"
                                            min="0" required>
                                     <small class="text-muted">Alert when stock falls below this level</small>
-                                    @error('reorder_level')
+                                    @error('minimum_stock')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
+                                <div class="col-md-4 mb-3">
+                                    <label for="maximum_stock" class="form-label">Maximum Stock <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control @error('maximum_stock') is-invalid @enderror" 
+                                           id="maximum_stock" name="maximum_stock" value="{{ old('maximum_stock', 1000) }}"
+                                           min="1" required>
+                                    <small class="text-muted">Maximum stock capacity</small>
+                                    @error('maximum_stock')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="unit_price" class="form-label">Unit Price <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" class="form-control @error('unit_price') is-invalid @enderror" 
+                                           id="unit_price" name="unit_price" value="{{ old('unit_price', 0) }}"
+                                           min="0" required>
+                                    @error('unit_price')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="classification" class="form-label">Classification <span class="text-danger">*</span></label>
+                                    <select class="form-control @error('classification') is-invalid @enderror" 
+                                            id="classification" name="classification" required>
+                                        <option value="">-- Select Classification --</option>
+                                        <option value="Prescription" {{ old('classification') == 'Prescription' ? 'selected' : '' }}>Prescription</option>
+                                        <option value="OTC" {{ old('classification') == 'OTC' ? 'selected' : '' }}>Over-the-Counter (OTC)</option>
+                                    </select>
+                                    @error('classification')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                                    <select class="form-control @error('status') is-invalid @enderror" 
+                                            id="status" name="status" required>
+                                        <option value="">-- Select Status --</option>
+                                        <option value="Active" {{ old('status') == 'Active' ? 'selected' : 'selected' }}>Active</option>
+                                        <option value="Inactive" {{ old('status') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                                    </select>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
 
                             <div class="row">
@@ -136,27 +208,16 @@
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <label for="supplier" class="form-label">Supplier</label>
-                                    <input type="text" class="form-control @error('supplier') is-invalid @enderror" 
-                                           id="supplier" name="supplier" value="{{ old('supplier') }}"
-                                           placeholder="Supplier name">
-                                    @error('supplier')
+                                    <label for="manufacturer" class="form-label">Manufacturer</label>
+                                    <input type="text" class="form-control @error('manufacturer') is-invalid @enderror" 
+                                           id="manufacturer" name="manufacturer" value="{{ old('manufacturer') }}"
+                                           placeholder="Manufacturer name">
+                                    @error('manufacturer')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <label for="storage_location" class="form-label">Storage Location</label>
-                                    <input type="text" class="form-control @error('storage_location') is-invalid @enderror" 
-                                           id="storage_location" name="storage_location" value="{{ old('storage_location') }}"
-                                           placeholder="e.g., Cabinet A, Shelf 2">
-                                    @error('storage_location')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
 
                             <div class="mb-3">
                                 <label for="notes" class="form-label">Notes</label>

@@ -64,6 +64,29 @@
                 </div>
             </div>
 
+            {{-- Debug Information (only show when filtering) --}}
+            @if(request()->has('service') && request('service'))
+                <div class="alert alert-info">
+                    <strong>Filter Applied:</strong> Service = "{{ request('service') }}" | 
+                    <strong>Results Found:</strong> {{ $appointments->total() }} appointments
+                    @if($appointments->total() == 0)
+                        <br><small>Try checking if appointments exist with service names containing: 
+                        @if(request('service') == 'Laboratory')
+                            "Laboratory", "Lab", "Test", "CBC", "Urinalysis", "Blood Test"
+                        @elseif(request('service') == 'Prenatal')
+                            "Prenatal", "Pregnancy", "Prenatal Care"
+                        @elseif(request('service') == 'Dental')
+                            "Dental", "Tooth", "Oral Health"
+                        @elseif(request('service') == 'Vaccination')
+                            "Vaccination", "Vaccine", "Immunization"
+                        @elseif(request('service') == 'General Consultation')
+                            "General Consultation", "Consultation", "Checkup"
+                        @endif
+                        </small>
+                    @endif
+                </div>
+            @endif
+
             {{-- Statistics Cards --}}
             <div class="row mb-4">
                 <div class="col-md-3">

@@ -12,7 +12,18 @@ class StaffTbdotController extends Controller
     public function index()
     {
         try {
-            $tbdots = Tbdot::latest()->get();
+            $tbdots = Tbdot::with('appointment')->latest()->get();
+            
+            // Debug: Log the first record to check fields
+            if ($tbdots->count() > 0) {
+                \Log::info('Staff TBdots - First record:', [
+                    'patient_name' => $tbdots->first()->patient_name,
+                    'treatment_status' => $tbdots->first()->treatment_status,
+                    'treatment_category' => $tbdots->first()->treatment_category,
+                    'tb_type' => $tbdots->first()->tb_type,
+                ]);
+            }
+            
             return view('staff.tbdots.index', compact('tbdots'));
         } catch (\Exception $e) {
             \Log::error('TB-DOTS Index Error: ' . $e->getMessage());

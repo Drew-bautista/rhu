@@ -47,6 +47,12 @@ class DoctorTreatmentController extends Controller
             'pregnancy_history' => 'nullable|string',
         ]);
 
+        // Debug: Log the medication_treatment data
+        \Log::info('Treatment Store - Medication Treatment:', [
+            'medication_treatment' => $request->input('medication_treatment'),
+            'all_data' => $request->all()
+        ]);
+
         // Create a new Treatment record
         Treatment::create([
             'patient_id' => $request->input('patient_id'),
@@ -64,7 +70,13 @@ class DoctorTreatmentController extends Controller
         return redirect()->route('admin.treatment.index')->with('success', 'Treatment created successfully!');
     }
 
-
+    public function edit($id)
+    {
+        $treatment = Treatment::with('patient')->findOrFail($id);
+        $patients = Patients::all();
+        $healthAssessments = HealthAssessment::all();
+        return view('admin.treatment.edit', compact('treatment', 'patients', 'healthAssessments'));
+    }
 
     public function update(Request $request, $id)
     {

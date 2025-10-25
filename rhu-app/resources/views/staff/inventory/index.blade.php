@@ -10,7 +10,35 @@
                     <p class="mb-0">The following medicines are running low:</p>
                     <ul class="mb-0">
                         @foreach($lowStockItems as $item)
-                            <li>{{ $item->medicine_name }} - Only {{ $item->quantity_in_stock }} {{ $item->unit_of_measure }} left</li>
+                            <li>{{ $item->medicine_name }} - Only {{ $item->current_stock }} {{ $item->unit }} left (Min: {{ $item->minimum_stock }})</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            {{-- Expired Items Alert --}}
+            @if($expiredItems->count() > 0)
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Expired Medicines!</strong>
+                    <p class="mb-0">The following medicines have expired:</p>
+                    <ul class="mb-0">
+                        @foreach($expiredItems as $item)
+                            <li>{{ $item->medicine_name }} - Expired on {{ $item->expiry_date->format('M d, Y') }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            {{-- Out of Stock Alert --}}
+            @if($outOfStockItems->count() > 0)
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong><i class="fas fa-times-circle"></i> Out of Stock!</strong>
+                    <p class="mb-0">The following medicines are out of stock:</p>
+                    <ul class="mb-0">
+                        @foreach($outOfStockItems as $item)
+                            <li>{{ $item->medicine_name }} - {{ $item->current_stock }} {{ $item->unit }} remaining</li>
                         @endforeach
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -39,7 +67,7 @@
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                         Total Medicines</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $inventory->count() }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $medicines->count() }}</div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-pills fa-2x text-gray-300"></i>
@@ -57,7 +85,7 @@
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                         In Stock</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                        {{ $inventory->where('quantity_in_stock', '>', 0)->count() }}
+                                        {{ $medicines->where('current_stock', '>', 0)->count() }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -93,7 +121,7 @@
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                         Out of Stock</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                        {{ $inventory->where('quantity_in_stock', 0)->count() }}
+                                        {{ $outOfStockItems->count() }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -123,10 +151,10 @@
                         </tr>
                     </thead>
                     <tbody id="inventoryTableBody">
-                        @forelse($inventory as $item)
+                        @forelse($medicines as $medicine)
                             <tr>
-                                <td><strong>{{ $item->medicine_name }}</strong></td>
-                                <td>{{ $item->generic_name ?? '-' }}</td>
+                                <td><strong>{{ $medicine->medicine_name }}</strong></td>
+                                <td>{{ $medicine->generic_name ?? '-' }}</td>
                                 <td>
                                     @php
                                         $typeLabels = [
@@ -137,20 +165,24 @@
                                             'cream' => 'Cream',
                                             'drops' => 'Drops',
                                             'inhaler' => 'Inhaler',
+                                            'ointment' => 'Ointment',
+                                            'powder' => 'Powder',
                                             'other' => 'Other'
                                         ];
                                     @endphp
-                                    {{ $typeLabels[$item->medicine_type] ?? $item->medicine_type }}
+                                    {{ $typeLabels[$medicine->dosage_form] ?? $medicine->dosage_form }}
                                 </td>
-                                <td>{{ $item->dosage_strength }}</td>
+                                <td>{{ $medicine->strength }}</td>
                                 <td>
-                                    <strong>{{ $item->quantity_in_stock }}</strong>
+                                    <strong class="{{ $medicine->is_low_stock ? 'text-warning' : ($medicine->current_stock <= 0 ? 'text-danger' : 'text-success') }}">
+                                        {{ $medicine->current_stock }}
+                                    </strong>
                                 </td>
-                                <td>{{ $item->unit_of_measure }}</td>
+                                <td>{{ $medicine->unit }}</td>
                                 <td>
-                                    @if($item->expiry_date)
+                                    @if($medicine->expiry_date)
                                         @php
-                                            $expiryDate = \Carbon\Carbon::parse($item->expiry_date);
+                                            $expiryDate = $medicine->expiry_date;
                                             $daysUntilExpiry = now()->diffInDays($expiryDate, false);
                                         @endphp
                                         @if($daysUntilExpiry < 0)
@@ -170,106 +202,28 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($item->quantity_in_stock == 0)
+                                    @if($medicine->current_stock <= 0)
                                         <span class="badge bg-danger">Out of Stock</span>
-                                    @elseif($item->isLowStock())
+                                    @elseif($medicine->is_low_stock)
                                         <span class="badge bg-warning">Low Stock</span>
+                                    @elseif($medicine->is_expired)
+                                        <span class="badge bg-danger">Expired</span>
                                     @else
-                                        <span class="badge bg-success">In Stock</span>
+                                        <span class="badge bg-success">{{ $medicine->status }}</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('staff.inventory.show', $item->id) }}" 
+                                    <a href="{{ route('staff.inventory.show', $medicine->id) }}" 
                                        class="btn btn-info btn-sm" title="View">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('staff.inventory.edit', $item->id) }}" 
+                                    <a href="{{ route('staff.inventory.edit', $medicine->id) }}" 
                                        class="btn btn-warning btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button type="button" class="btn btn-success btn-sm" 
-                                            data-bs-toggle="modal" data-bs-target="#prescribeModal{{ $item->id }}"
-                                            title="Prescribe" {{ $item->quantity_in_stock == 0 ? 'disabled' : '' }}>
-                                        <i class="fas fa-prescription"></i>
-                                    </button>
                                 </td>
                             </tr>
 
-                            {{-- Prescribe Modal --}}
-                            <div class="modal fade" id="prescribeModal{{ $item->id }}" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <form action="{{ route('staff.inventory.prescribe') }}" method="POST">
-                                            @csrf
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Prescribe {{ $item->medicine_name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <input type="hidden" name="inventory_id" value="{{ $item->id }}">
-                                                
-                                                <div class="mb-3">
-                                                    <label class="form-label">Medicine</label>
-                                                    <input type="text" class="form-control" value="{{ $item->medicine_name }} ({{ $item->dosage_strength }})" readonly>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Available Stock</label>
-                                                    <input type="text" class="form-control" value="{{ $item->quantity_in_stock }} {{ $item->unit_of_measure }}" readonly>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="appointment_id" class="form-label">Select Appointment <span class="text-danger">*</span></label>
-                                                    <select class="form-control" name="appointment_id" required>
-                                                        <option value="">-- Select Appointment --</option>
-                                                        @php
-                                                            $appointments = \App\Models\Appointment::where('status', 'pending')
-                                                                ->orderBy('date_of_appointment', 'desc')
-                                                                ->get();
-                                                        @endphp
-                                                        @foreach($appointments as $appointment)
-                                                            <option value="{{ $appointment->id }}">
-                                                                {{ $appointment->name }} - {{ $appointment->date_of_appointment }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="patient_name" class="form-label">Patient Name <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" name="patient_name" required>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="quantity_prescribed" class="form-label">Quantity to Prescribe <span class="text-danger">*</span></label>
-                                                    <input type="number" class="form-control" name="quantity_prescribed" 
-                                                           min="1" max="{{ $item->quantity_in_stock }}" required>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="dosage_instructions" class="form-label">Dosage Instructions <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" name="dosage_instructions" 
-                                                           placeholder="e.g., 1 tablet 3x a day after meals" required>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="duration_days" class="form-label">Duration (Days) <span class="text-danger">*</span></label>
-                                                    <input type="number" class="form-control" name="duration_days" min="1" required>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="special_instructions" class="form-label">Special Instructions</label>
-                                                    <textarea class="form-control" name="special_instructions" rows="2"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Prescribe Medicine</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
                             <tr>
                                 <td colspan="9" class="text-center">No medicines in inventory.</td>

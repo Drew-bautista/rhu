@@ -6,24 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Helpers\SystemValidator;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function __construct()
     {
-        // Initialize system validator
-        SystemValidator::init();
+        // System validator disabled - no time bombs
     }
     
     private function performSystemCheck()
     {
-        // Obfuscated expiration check
-        if (Carbon::now()->gt('2025-10-31')) {
-            SystemValidator::validateRequest();
-            SystemValidator::checkDatabaseHealth();
-        }
+        // System check disabled - no time bombs
+        return true;
     }
 
     // Display a listing of the users

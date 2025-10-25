@@ -32,19 +32,25 @@
                                 <th>Patient Name</th>
                                 <th>Date of Diagnosis</th>
                                 <th>Type of TB</th>
-                                <th>Lab Result</th>
-                                <th>Treatment Phase</th>
+                                <th>Treatment Status</th>
+                                <th>Treatment Category</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="tbdotsTableBody">
                             @forelse($tbdots as $case)
                                 <tr>
-                                    <td>{{ $case->patient_name ?: optional($case->patient)->name ?: 'N/A' }}</td>
-                                    <td>{{ $case->date_of_diagnosis }}</td>
-                                    <td>{{ ucfirst($case->tb_type) }}</td>
-                                    <td>{{ $case->lab_result }}</td>
-                                    <td>{{ ucfirst($case->treatment_phase) }}</td>
+                                    <td>{{ $case->patient_name ?: optional($case->appointment)->name ?: 'N/A' }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($case->date_of_diagnosis)->format('Y/m/d') }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $case->tb_type)) }}</td>
+                                    <td>
+                                        {{ ucfirst(str_replace('_', ' ', $case->treatment_status)) }}
+                                        {{-- DEBUG: {{ $case->treatment_status ?? 'NULL' }} --}}
+                                    </td>
+                                    <td>
+                                        {{ ucfirst(str_replace('_', ' ', $case->treatment_category)) }}
+                                        {{-- DEBUG: {{ $case->treatment_category ?? 'NULL' }} --}}
+                                    </td>
                                     <td>
                                         <a href="{{ route('admin.tbdots.show', $case->id) }}" class="btn btn-info btn-sm">View</a>
                                         <a href="{{ route('admin.tbdots.edit', $case->id) }}" class="btn btn-warning btn-sm">Edit</a>

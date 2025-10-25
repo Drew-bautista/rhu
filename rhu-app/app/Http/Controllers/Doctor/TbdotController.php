@@ -12,6 +12,18 @@ class TbdotController extends Controller
     public function index()
     {
         $tbdots = Tbdot::with('appointment')->latest()->get();
+        
+        // Debug: Log the first record to check fields
+        if ($tbdots->count() > 0) {
+            \Log::info('Doctor TBdots - First record:', [
+                'patient_name' => $tbdots->first()->patient_name,
+                'treatment_status' => $tbdots->first()->treatment_status,
+                'treatment_category' => $tbdots->first()->treatment_category,
+                'tb_type' => $tbdots->first()->tb_type,
+            ]);
+        }
+        
+        \Log::info('Doctor TBdots - Loading view: admin.TBDots.index');
         return view('admin.TBDots.index', compact('tbdots'));
     }
 

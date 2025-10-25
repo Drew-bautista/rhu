@@ -17,9 +17,6 @@
                 <div class="mb-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <h5 class="text-primary">Patient Details</h5>
-                        <div>
-                            <a href="{{ route('admin.dental-record.edit', $dentalRecords->id) }}" class="btn btn-warning btn-sm">Update Data</a>
-                        </div>
                     </div>
 
                     <hr>
@@ -65,7 +62,7 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <h5 class="text-primary">Dental Details</h5>
                         <a href="{{ route('admin.dental-record.edit', $dentalRecords->id) }}"
-                            class="btn btn-warning btn-sm">Update Data</a>
+                            class="btn btn-warning btn-sm">Update Dental Details</a>
                     </div>
 
                     <hr>

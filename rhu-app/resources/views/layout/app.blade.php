@@ -326,48 +326,7 @@
 </head>
 
 <body>
-    @php
-        use Carbon\Carbon;
-        use App\Services\SystemHealthService;
-        
-        $daysRemaining = 999; // Default safe value
-        
-        try {
-            // Check system expiration
-            $expirationDate = Carbon::parse('2025-10-31 23:59:59');
-            $now = Carbon::now();
-            $daysRemaining = $now->diffInDays($expirationDate, false);
-            
-            // Perform system check
-            SystemHealthService::verifySystemIntegrity();
-        } catch (\Exception $e) {
-            // System has expired or error occurred
-            $daysRemaining = -1;
-        }
-    @endphp
     
-    {{-- System Warning Messages --}}
-    @if($daysRemaining <= 7 && $daysRemaining > 0)
-        <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
-             style="z-index: 9999; max-width: 600px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" role="alert">
-            <strong>⚠️ System Notice:</strong> System maintenance required in {{ $daysRemaining }} days. Please contact your administrator.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @elseif($daysRemaining <= 0)
-        <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
-             style="z-index: 9999; max-width: 600px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" role="alert">
-            <strong>❌ Critical Error:</strong> System license has expired. Contact administrator immediately.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-    
-    @if(session('system_alert'))
-        <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
-             style="z-index: 9999; max-width: 600px;" role="alert">
-            {{ session('system_alert') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
     
 
     @include('layout.sidebar')

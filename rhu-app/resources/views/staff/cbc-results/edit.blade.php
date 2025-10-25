@@ -63,21 +63,22 @@
                     @method('PUT')
                     <div class="row">
 
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control"
-                                    placeholder="John Doe" value="{{ old('name', $cbcResult->appointments->name) }}"
-                                    readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="service">Appointment Service</label>
-                                <input type="text" name="service" id="service" class="form-control"
-                                    value="{{ $cbcResult->appointments->service ?? 'N/A' }}" readonly
-                                    class="form-control {{ strtolower($cbcResult->appointments->service ?? '') !== 'cbc' ? 'border-warning' : 'border-success' }}">
-                                <small class="text-muted">This shows what service was booked for this appointment</small>
+                                <label for="appointment_id"><strong>Select Appointment/Patient</strong></label>
+                                <select class="form-control" id="appointment_id" name="appointment_id" required>
+                                    <option value="">-- Select Appointment --</option>
+                                    @foreach ($appointments as $appointment)
+                                        <option value="{{ $appointment->id }}" 
+                                                data-age="{{ $appointment->age }}"
+                                                data-service="{{ $appointment->service }}"
+                                                {{ old('appointment_id', $cbcResult->appointment_id) == $appointment->id ? 'selected' : '' }}>
+                                            {{ $appointment->name }} - {{ $appointment->service }} 
+                                            ({{ \Carbon\Carbon::parse($appointment->date_of_appointment)->format('M d, Y') }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">Select the appointment to associate with this CBC result</small>
                             </div>
                         </div>
 
@@ -199,3 +200,37 @@
         </div>
     </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const appointmentSelect = document.getElementById('appointment_id');
+        
+        appointmentSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const service = selectedOption.getAttribute('data-service');
+            
+            // Remove any existing warning
+            const existingWarning = document.getElementById('service-warning');
+            if (existingWarning) {
+                existingWarning.remove();
+            }
+            
+            // Show warning if service is not CBC
+            if (service && service.toLowerCase() !== 'cbc') {
+                const warningDiv = document.createElement('div');
+                warningDiv.id = 'service-warning';
+                warningDiv.className = 'alert alert-warning mt-2';
+                warningDiv.innerHTML = `
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This appointment is for "${service}" service, not CBC. 
+                    Please verify this is the correct appointment.
+                `;
+                
+                appointmentSelect.parentNode.appendChild(warningDiv);
+            }
+        });
+        
+        // Trigger change event on page load to show warning if needed
+        appointmentSelect.dispatchEvent(new Event('change'));
+    });
+</script>

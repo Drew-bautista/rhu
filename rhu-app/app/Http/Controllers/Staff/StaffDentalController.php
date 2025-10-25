@@ -101,7 +101,7 @@ class StaffDentalController extends Controller
             'prescription' => $request->prescription,
         ]);
 
-        return redirect()->route('staff.dental-record.index')->with('success', 'Dental record updated successfully.');
+        return redirect()->route('staff.dental-record.show', $id)->with('success', 'Dental record updated successfully.');
     }
 
     public function destroy($id)

@@ -12,29 +12,39 @@ class Prescription extends Model
     protected $fillable = [
         'appointment_id',
         'inventory_id',
-        'prescribed_by',
         'patient_name',
+        'patient_age',
+        'patient_contact',
+        'prescription_number',
+        'prescription_date',
+        'doctor_name',
+        'prescribed_by',
+        'diagnosis',
+        'symptoms',
+        'medical_history',
+        'status',
+        'notes',
+        'follow_up_date',
+        'follow_up_notes',
         'quantity_prescribed',
         'dosage_instructions',
         'duration_days',
-        'special_instructions',
-        'status',
-        'dispensed_at',
-        'dispensed_by'
     ];
 
     protected $casts = [
-        'dispensed_at' => 'datetime',
+        'prescription_date' => 'date',
+        'follow_up_date' => 'date',
     ];
 
+    // Relationships
     public function appointment()
     {
         return $this->belongsTo(Appointment::class);
     }
 
-    public function inventory()
+    public function prescriptionItems()
     {
-        return $this->belongsTo(Inventory::class);
+        return $this->hasMany(PrescriptionItem::class);
     }
 
     public function prescribedBy()
@@ -42,8 +52,23 @@ class Prescription extends Model
         return $this->belongsTo(User::class, 'prescribed_by');
     }
 
-    public function dispensedBy()
+    public function inventory()
     {
-        return $this->belongsTo(User::class, 'dispensed_by');
+        return $this->belongsTo(Inventory::class, 'inventory_id');
+    }
+
+    // Generate prescription number
+    public static function generatePrescriptionNumber()
+    {
+        $year = date('Y');
+        $month = date('m');
+        $lastRecord = self::whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->orderBy('id', 'desc')
+            ->first();
+        
+        $nextNumber = $lastRecord ? (intval(substr($lastRecord->prescription_number, -4)) + 1) : 1;
+        
+        return 'RX-' . $year . $month . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
     }
 }

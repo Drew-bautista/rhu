@@ -78,6 +78,7 @@ class StaffCbcResultController extends Controller
     {
         try {
             $validatedData = $request->validate([
+                'appointment_id' => 'required|exists:appointments,id',
                 'hemoglobin' => 'nullable|numeric',
                 'hematocrit' => 'nullable|numeric',
                 'rbc_count' => 'nullable|numeric',
@@ -94,13 +95,14 @@ class StaffCbcResultController extends Controller
                 'remarks' => 'nullable|string|max:255',
             ]);
 
-            $cbcResult = CBC_Results::with('appointments')->findOrFail($id);
+            $cbcResult = CBC_Results::findOrFail($id);
             
-            // Show warning if service is not CBC (but still allow update)
-            if ($cbcResult->appointments && strtolower($cbcResult->appointments->service) !== 'cbc') {
+            // Check if the new appointment service is CBC
+            $appointment = Appointment::findOrFail($validatedData['appointment_id']);
+            if (strtolower($appointment->service) !== 'cbc') {
                 $cbcResult->update($validatedData);
                 return redirect()->route('staff.cbc-results.index')
-                    ->with('warning', "CBC Results updated successfully. Note: This appointment was for '{$cbcResult->appointments->service}' service, not CBC.");
+                    ->with('warning', "CBC Results updated successfully. Note: This appointment is for '{$appointment->service}' service, not CBC. Please verify this is correct.");
             }
 
             $cbcResult->update($validatedData);

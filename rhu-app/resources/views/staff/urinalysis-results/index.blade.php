@@ -75,3 +75,35 @@
         </div>
     </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Client-side filter for Urinalysis Results
+    $(document).ready(function () {
+        const $input = $('#searchInput');
+        const $tbody = $('#urinalysisTableBody');
+        const $count = $('#urinalysisCount');
+
+        if ($input.length && $tbody.length) {
+            $input.on('input', function () {
+                const q = $(this).val().toLowerCase().trim();
+                let visibleRows = 0;
+                
+                $tbody.find('tr').each(function () {
+                    const text = $(this).text().toLowerCase();
+                    const isVisible = text.indexOf(q) !== -1;
+                    $(this).toggle(isVisible);
+                    
+                    if (isVisible && !$(this).hasClass('empty-row')) {
+                        visibleRows++;
+                    }
+                });
+                
+                // Update count
+                if ($count.length) {
+                    $count.text(visibleRows);
+                }
+            });
+        }
+    });
+</script>

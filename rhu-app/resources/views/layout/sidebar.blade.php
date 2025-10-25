@@ -206,10 +206,6 @@
     }
 </style>
 
-@php
-    use Carbon\Carbon;
-    $isExpired = Carbon::now()->gt('2025-10-31');
-@endphp
 
 <div class="sidenav" id="sidenav">
     <!-- Header for Clinic Department -->
@@ -303,10 +299,9 @@
                         <a class="dropdown-btn" href="{{ route('admin.family-planning.index') }}">
                             <i class='bx bx-heart-circle'></i> Family Planning
                         </a>
-                        {{-- Temporarily disabled until migration is run --}}
-                        {{-- <a class="dropdown-btn" href="{{ route('admin.birth-certificates.index') }}">
+                        <a class="dropdown-btn" href="{{ route('admin.birth-certificates.index') }}">
                             <i class='bx bx-certification'></i> Birth Certificate
-                        </a> --}}
+                        </a>
                     </div>
                 </div>
                 
@@ -325,6 +320,21 @@
                     </div>
                 </div>
                 
+                {{-- Inventory Management --}}
+                <div class="dropdownSmsprofile">
+                    <button class="dropdown-btn" onclick="toggleDropdown(this)">
+                        <i class='bx bx-package'></i> Inventory Management <i class="fa fa-caret-down" style="float: right;"></i>
+                    </button>
+                    <div class="dropdown-container">
+                        <a class="dropdown-btn" href="{{ route('admin.inventory.index') }}">
+                            <i class='bx bx-list-ul'></i> All Medicines
+                        </a>
+                        <a class="dropdown-btn" href="{{ route('admin.inventory.create') }}">
+                            <i class='bx bx-plus'></i> Add Medicine
+                        </a>
+                    </div>
+                </div>
+                
                 {{-- Prescription Management --}}
                 <div class="dropdownSmsprofile">
                     <button class="dropdown-btn" onclick="toggleDropdown(this)">
@@ -334,8 +344,8 @@
                         <a class="dropdown-btn" href="{{ route('admin.prescriptions.index') }}">
                             <i class='bx bx-list-ul'></i> All Prescriptions
                         </a>
-                        <a class="dropdown-btn" href="{{ route('admin.prescriptions.pending') }}">
-                            <i class='bx bx-time'></i> Pending Prescriptions
+                        <a class="dropdown-btn" href="{{ route('admin.prescriptions.create') }}">
+                            <i class='bx bx-plus'></i> Create Prescription
                         </a>
                     </div>
                 </div>
@@ -408,10 +418,9 @@
                         <a class="dropdown-btn" href="{{ route('staff.family-planning.index') }}">
                             <i class='bx bx-heart-circle'></i> Family Planning
                         </a>
-                        {{-- Temporarily disabled until migration is run --}}
-                        {{-- <a class="dropdown-btn" href="{{ route('staff.birth-certificates.index') }}">
+                        <a class="dropdown-btn" href="{{ route('staff.birth-certificates.index') }}">
                             <i class='bx bx-certification'></i> Birth Certificate
-                        </a> --}}
+                        </a>
                     </div>
                 </div>
                 

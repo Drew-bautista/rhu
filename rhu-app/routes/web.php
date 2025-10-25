@@ -112,23 +112,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/doctor/vaccines/{vaccine}', [VaccineController::class, 'update'])->name('admin.vaccines.update');
         Route::delete('/doctor/vaccines/{vaccine}', [VaccineController::class, 'destroy'])->name('admin.vaccines.destroy');
 
-        // Inventory Management
-        Route::get('/doctor/inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
-        Route::get('/doctor/inventory/create', [InventoryController::class, 'create'])->name('admin.inventory.create');
-        Route::post('/doctor/inventory/store', [InventoryController::class, 'store'])->name('admin.inventory.store');
-        Route::get('/doctor/inventory/{inventory}', [InventoryController::class, 'show'])->name('admin.inventory.show');
-        Route::get('/doctor/inventory/{inventory}/edit', [InventoryController::class, 'edit'])->name('admin.inventory.edit');
-        Route::put('/doctor/inventory/{inventory}', [InventoryController::class, 'update'])->name('admin.inventory.update');
-        Route::delete('/doctor/inventory/{inventory}', [InventoryController::class, 'destroy'])->name('admin.inventory.destroy');
-        Route::post('/doctor/inventory/prescribe', [InventoryController::class, 'prescribe'])->name('admin.inventory.prescribe');
 
-        // Prescription Management
-        Route::get('/doctor/prescriptions', [PrescriptionController::class, 'index'])->name('admin.prescriptions.index');
-        Route::get('/doctor/prescriptions/pending', [PrescriptionController::class, 'pending'])->name('admin.prescriptions.pending');
-        Route::get('/doctor/prescriptions/{prescription}', [PrescriptionController::class, 'show'])->name('admin.prescriptions.show');
-        Route::patch('/doctor/prescriptions/{prescription}/dispense', [PrescriptionController::class, 'dispense'])->name('admin.prescriptions.dispense');
-        Route::patch('/doctor/prescriptions/{prescription}/cancel', [PrescriptionController::class, 'cancel'])->name('admin.prescriptions.cancel');
-        Route::get('/doctor/prescriptions/patient/{patientName}', [PrescriptionController::class, 'patientHistory'])->name('admin.prescriptions.patient-history');
 
         // Report Generation
         Route::get('/doctor/reports', [ReportController::class, 'index'])->name('admin.reports.index');
@@ -146,14 +130,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('/doctor/patients/{user}', [PatientController::class, 'destroy'])->name('admin.patient.destroy');
 
         //Treatment management routes
-        // Route::get('/doctor/treatment', [DoctorTreatmentController::class, 'index'])->name('admin.treatment.index');
-        // Route::get('doctor/treatment-create', [DoctorTreatmentController::class, 'create'])->name('admin.treatment.create');
-        // Route::get('/doctor/treatment/{id}', [DoctorTreatmentController::class, 'show'])->name('admin.treatment.show');
-        // Route::post('/store', [DoctorTreatmentController::class, 'store'])->name('admin.treatment.store');
-        // Route::get('/edit/{id}', [DoctorTreatmentController::class, 'edit'])->name('admin.treatment.edit');
-        // Route::put('/update/{id}', [DoctorTreatmentController::class, 'update'])->name('admin.treatment.update');
-        // Route::delete('/delete/{id}', [DoctorTreatmentController::class, 'destroy'])->name('admin.treatment.delete');
-        // Route::get('/get-health-assessment/{patientId}', [DoctorTreatmentController::class, 'getHealthAssessment']);
+        Route::get('/doctor/treatment', [DoctorTreatmentController::class, 'index'])->name('admin.treatment.index');
+        Route::get('/doctor/treatment/create', [DoctorTreatmentController::class, 'create'])->name('admin.treatment.create');
+        Route::get('/doctor/treatment/{id}', [DoctorTreatmentController::class, 'show'])->name('admin.treatment.show');
+        Route::post('/doctor/treatment/store', [DoctorTreatmentController::class, 'store'])->name('admin.treatment.store');
+        Route::get('/doctor/treatment/{id}/edit', [DoctorTreatmentController::class, 'edit'])->name('admin.treatment.edit');
+        Route::put('/doctor/treatment/{id}', [DoctorTreatmentController::class, 'update'])->name('admin.treatment.update');
+        Route::delete('/doctor/treatment/{id}', [DoctorTreatmentController::class, 'destroy'])->name('admin.treatment.delete');
+        Route::get('/doctor/get-health-assessment/{patientId}', [DoctorTreatmentController::class, 'getHealthAssessment']);
 
         //Health Assessment
         // Route::get('/doctor/health-record', [HealthRecordController::class, 'index'])->name('admin.health-record.index');
@@ -193,14 +177,14 @@ Route::middleware('auth')->group(function () {
         Route::put('/doctor/family-planning/{id}', [FamilyPlanningController::class, 'update'])->name('admin.family-planning.update');
         Route::delete('/doctor/family-planning/{id}', [FamilyPlanningController::class, 'destroy'])->name('admin.family-planning.destroy');
 
-        //Birth Certificates - TEMPORARILY DISABLED (Need to run migration first)
-        // Route::get('/doctor/birth-certificates', [BirthCertificateController::class, 'index'])->name('admin.birth-certificates.index');
-        // Route::get('/doctor/birth-certificates/create', [BirthCertificateController::class, 'create'])->name('admin.birth-certificates.create');
-        // Route::post('/doctor/birth-certificates/store', [BirthCertificateController::class, 'store'])->name('admin.birth-certificates.store');
-        // Route::get('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'show'])->name('admin.birth-certificates.show');
-        // Route::get('/doctor/birth-certificates/{birthCertificate}/edit', [BirthCertificateController::class, 'edit'])->name('admin.birth-certificates.edit');
-        // Route::put('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'update'])->name('admin.birth-certificates.update');
-        // Route::delete('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'destroy'])->name('admin.birth-certificates.destroy');
+        //Birth Certificates
+        Route::get('/doctor/birth-certificates', [BirthCertificateController::class, 'index'])->name('admin.birth-certificates.index');
+        Route::get('/doctor/birth-certificates/create', [BirthCertificateController::class, 'create'])->name('admin.birth-certificates.create');
+        Route::post('/doctor/birth-certificates/store', [BirthCertificateController::class, 'store'])->name('admin.birth-certificates.store');
+        Route::get('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'show'])->name('admin.birth-certificates.show');
+        Route::get('/doctor/birth-certificates/{birthCertificate}/edit', [BirthCertificateController::class, 'edit'])->name('admin.birth-certificates.edit');
+        Route::put('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'update'])->name('admin.birth-certificates.update');
+        Route::delete('/doctor/birth-certificates/{birthCertificate}', [BirthCertificateController::class, 'destroy'])->name('admin.birth-certificates.destroy');
 
         //Dental Records
         Route::get('/doctor/dental-record', [DoctorDentalController::class, 'index'])->name('admin.dental-record.index');
@@ -210,6 +194,34 @@ Route::middleware('auth')->group(function () {
         Route::get('/doctor/dental-record/{id}/edit', [DoctorDentalController::class, 'edit'])->name('admin.dental-record.edit');
         Route::put('/doctor/dental-record/{id}', [DoctorDentalController::class, 'update'])->name('admin.dental-record.update');
         Route::delete('/doctor/dental-record/{id}', [DoctorDentalController::class, 'destroy'])->name('admin.dental-record.destroy');
+        
+        // Inventory Management (Doctor Only)
+        Route::get('/doctor/inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
+        Route::get('/doctor/inventory/create', [InventoryController::class, 'create'])->name('admin.inventory.create');
+        Route::post('/doctor/inventory/store', [InventoryController::class, 'store'])->name('admin.inventory.store');
+        Route::get('/doctor/inventory/{medicine}', [InventoryController::class, 'show'])->name('admin.inventory.show');
+        Route::get('/doctor/inventory/{medicine}/edit', [InventoryController::class, 'edit'])->name('admin.inventory.edit');
+        Route::put('/doctor/inventory/{medicine}', [InventoryController::class, 'update'])->name('admin.inventory.update');
+        Route::delete('/doctor/inventory/{medicine}', [InventoryController::class, 'destroy'])->name('admin.inventory.destroy');
+        Route::post('/doctor/inventory/{medicine}/adjust-stock', [InventoryController::class, 'adjustStock'])->name('admin.inventory.adjust-stock');
+
+        // Test route first
+        Route::get('/doctor/prescriptions-test', function() {
+            return response()->json(['status' => 'Route works', 'time' => now()]);
+        });
+        
+        // Prescription Management (Doctor Only)
+        Route::get('/doctor/prescriptions', [PrescriptionController::class, 'index'])->name('admin.prescriptions.index');
+        Route::get('/doctor/prescriptions/pending', [PrescriptionController::class, 'pending'])->name('admin.prescriptions.pending');
+        Route::get('/doctor/prescriptions/create', [PrescriptionController::class, 'create'])->name('admin.prescriptions.create');
+        Route::post('/doctor/prescriptions/store', [PrescriptionController::class, 'store'])->name('admin.prescriptions.store');
+        Route::get('/doctor/prescriptions/patient/{patientName}', [PrescriptionController::class, 'patientHistory'])->name('admin.prescriptions.patient-history');
+        Route::get('/doctor/prescriptions/{prescription}', [PrescriptionController::class, 'show'])->name('admin.prescriptions.show');
+        Route::get('/doctor/prescriptions/{prescription}/edit', [PrescriptionController::class, 'edit'])->name('admin.prescriptions.edit');
+        Route::put('/doctor/prescriptions/{prescription}', [PrescriptionController::class, 'update'])->name('admin.prescriptions.update');
+        Route::patch('/doctor/prescriptions/{prescription}/dispense', [PrescriptionController::class, 'dispense'])->name('admin.prescriptions.dispense');
+        Route::patch('/doctor/prescriptions/{prescription}/cancel', [PrescriptionController::class, 'cancel'])->name('admin.prescriptions.cancel');
+        Route::delete('/doctor/prescriptions/{prescription}', [PrescriptionController::class, 'destroy'])->name('admin.prescriptions.destroy');
         
     });
 
@@ -262,11 +274,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/staff/inventory', [StaffInventoryController::class, 'index'])->name('staff.inventory.index');
         Route::get('/staff/inventory/create', [StaffInventoryController::class, 'create'])->name('staff.inventory.create');
         Route::post('/staff/inventory/store', [StaffInventoryController::class, 'store'])->name('staff.inventory.store');
-        Route::get('/staff/inventory/{inventory}', [StaffInventoryController::class, 'show'])->name('staff.inventory.show');
-        Route::get('/staff/inventory/{inventory}/edit', [StaffInventoryController::class, 'edit'])->name('staff.inventory.edit');
-        Route::put('/staff/inventory/{inventory}', [StaffInventoryController::class, 'update'])->name('staff.inventory.update');
-        Route::delete('/staff/inventory/{inventory}', [StaffInventoryController::class, 'destroy'])->name('staff.inventory.destroy');
-        Route::post('/staff/inventory/prescribe', [StaffInventoryController::class, 'prescribe'])->name('staff.inventory.prescribe');
+        Route::get('/staff/inventory/{medicine}', [StaffInventoryController::class, 'show'])->name('staff.inventory.show');
+        Route::get('/staff/inventory/{medicine}/edit', [StaffInventoryController::class, 'edit'])->name('staff.inventory.edit');
+        Route::put('/staff/inventory/{medicine}', [StaffInventoryController::class, 'update'])->name('staff.inventory.update');
+        Route::delete('/staff/inventory/{medicine}', [StaffInventoryController::class, 'destroy'])->name('staff.inventory.destroy');
         
         // Animal Bite Management for Staff
         Route::get('/staff/animal-bite', [StaffAnimalBiteController::class, 'index'])->name('staff.animal-bite.index');
@@ -349,14 +360,14 @@ Route::middleware('auth')->group(function () {
         Route::put('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'update'])->name('staff.cbc-results.update');
         Route::delete('/staff/cbc-results/{id}', [StaffCbcResultController::class, 'destroy'])->name('staff.cbc-results.destroy');
 
-        // Birth Certificates for Staff - TEMPORARILY DISABLED (Need to run migration first)
-        // Route::get('/staff/birth-certificates', [StaffBirthCertificateController::class, 'index'])->name('staff.birth-certificates.index');
-        // Route::get('/staff/birth-certificates/create', [StaffBirthCertificateController::class, 'create'])->name('staff.birth-certificates.create');
-        // Route::post('/staff/birth-certificates/store', [StaffBirthCertificateController::class, 'store'])->name('staff.birth-certificates.store');
-        // Route::get('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'show'])->name('staff.birth-certificates.show');
-        // Route::get('/staff/birth-certificates/{birthCertificate}/edit', [StaffBirthCertificateController::class, 'edit'])->name('staff.birth-certificates.edit');
-        // Route::put('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'update'])->name('staff.birth-certificates.update');
-        // Route::delete('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'destroy'])->name('staff.birth-certificates.destroy');
+        // Birth Certificates for Staff
+        Route::get('/staff/birth-certificates', [StaffBirthCertificateController::class, 'index'])->name('staff.birth-certificates.index');
+        Route::get('/staff/birth-certificates/create', [StaffBirthCertificateController::class, 'create'])->name('staff.birth-certificates.create');
+        Route::post('/staff/birth-certificates/store', [StaffBirthCertificateController::class, 'store'])->name('staff.birth-certificates.store');
+        Route::get('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'show'])->name('staff.birth-certificates.show');
+        Route::get('/staff/birth-certificates/{birthCertificate}/edit', [StaffBirthCertificateController::class, 'edit'])->name('staff.birth-certificates.edit');
+        Route::put('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'update'])->name('staff.birth-certificates.update');
+        Route::delete('/staff/birth-certificates/{birthCertificate}', [StaffBirthCertificateController::class, 'destroy'])->name('staff.birth-certificates.destroy');
 
         // Urinalysis Results for Staff
         Route::get('/staff/urinalysis-results', [StaffUrinalysisController::class, 'index'])->name('staff.urinalysis-results.index');

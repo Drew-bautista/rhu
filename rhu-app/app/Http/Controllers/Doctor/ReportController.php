@@ -17,7 +17,6 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        // Remove infirmaries as it doesn't exist as a relationship
         $query = Appointment::query();
         
         // Filter by date range
@@ -30,18 +29,86 @@ class ReportController extends Controller
             $query->where('name', 'like', '%' . $request->patient_name . '%');
         }
         
-        // Filter by service
+        // Enhanced service filtering with multiple variations
         if ($request->has('service') && $request->service) {
-            $query->where('service', $request->service);
+            $service = $request->service;
+            
+            switch ($service) {
+                case 'General Consultation':
+                    $query->where(function($q) {
+                        $q->where('service', 'General Consultation')
+                          ->orWhere('service', 'like', '%consultation%')
+                          ->orWhere('service', 'like', '%general%')
+                          ->orWhere('service', 'Checkup')
+                          ->orWhere('service', 'Medical Consultation');
+                    });
+                    break;
+                    
+                case 'Prenatal':
+                    $query->where(function($q) {
+                        $q->where('service', 'Prenatal')
+                          ->orWhere('service', 'like', '%prenatal%')
+                          ->orWhere('service', 'like', '%pregnancy%')
+                          ->orWhere('service', 'Prenatal Checkup')
+                          ->orWhere('service', 'Prenatal Care');
+                    });
+                    break;
+                    
+                case 'Dental':
+                    $query->where(function($q) {
+                        $q->where('service', 'Dental')
+                          ->orWhere('service', 'like', '%dental%')
+                          ->orWhere('service', 'like', '%tooth%')
+                          ->orWhere('service', 'Dental Checkup')
+                          ->orWhere('service', 'Dental Care')
+                          ->orWhere('service', 'Oral Health');
+                    });
+                    break;
+                    
+                case 'Vaccination':
+                    $query->where(function($q) {
+                        $q->where('service', 'Vaccination')
+                          ->orWhere('service', 'like', '%vaccination%')
+                          ->orWhere('service', 'like', '%vaccine%')
+                          ->orWhere('service', 'like', '%immunization%')
+                          ->orWhere('service', 'Immunization')
+                          ->orWhere('service', 'Vaccine');
+                    });
+                    break;
+                    
+                case 'Laboratory':
+                    $query->where(function($q) {
+                        $q->where('service', 'Laboratory')
+                          ->orWhere('service', 'like', '%laboratory%')
+                          ->orWhere('service', 'like', '%lab%')
+                          ->orWhere('service', 'like', '%test%')
+                          ->orWhere('service', 'Blood Test')
+                          ->orWhere('service', 'CBC')
+                          ->orWhere('service', 'Urinalysis')
+                          ->orWhere('service', 'Lab Test');
+                    });
+                    break;
+                    
+                default:
+                    $query->where('service', $service);
+                    break;
+            }
         }
         
         $appointments = $query->orderBy('date_of_appointment', 'desc')->paginate(20);
         
-        // Get statistics
+        // Get filtered statistics based on current filters
+        $statisticsQuery = Appointment::query();
+        
+        // Apply same filters to statistics
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $statisticsQuery->whereBetween('date_of_appointment', [$request->start_date, $request->end_date]);
+        }
+        
         $statistics = [
-            'total_appointments' => Appointment::count(),
-            'completed_appointments' => Appointment::where('status', 'completed')->count(),
-            'pending_appointments' => Appointment::where('status', 'pending')->count(),
+            'total_appointments' => $statisticsQuery->count(),
+            'completed_appointments' => (clone $statisticsQuery)->where('status', 'completed')->count(),
+            'pending_appointments' => (clone $statisticsQuery)->where('status', 'pending')->count(),
             'total_infirmary' => Infirmary::count(),
             'total_dental' => DentalRecords::count(),
             'total_prenatal' => PrenatalRecords::count(),
