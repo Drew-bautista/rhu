@@ -53,10 +53,17 @@ class InventoryController extends Controller
             'notes' => 'nullable|string'
         ]);
 
-        Medicine::create($validated);
+        try {
+            Medicine::on('mysql')->create($validated);
 
-        return redirect()->route('admin.inventory.index')
-            ->with('success', 'Medicine added to inventory successfully.');
+            return redirect()->route('admin.inventory.index')
+                ->with('success', 'Medicine added to inventory successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Doctor Medicine Create Error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Unable to add medicine. Please try again.');
+        }
     }
 
     public function show(Medicine $medicine)
@@ -94,12 +101,14 @@ class InventoryController extends Controller
                 'notes' => 'nullable|string'
             ]);
 
+            // Ensure we're using the correct database connection
+            $medicine->setConnection('mysql');
             $medicine->update($validated);
 
             return redirect()->route('admin.inventory.index')
                 ->with('success', 'Medicine updated successfully.');
         } catch (\Exception $e) {
-            \Log::error('Medicine Update Error: ' . $e->getMessage());
+            \Log::error('Doctor Medicine Update Error: ' . $e->getMessage());
             return redirect()->back()
                 ->with('error', 'Unable to update medicine. Please try again.')
                 ->withInput();
@@ -108,14 +117,22 @@ class InventoryController extends Controller
 
     public function destroy(Medicine $medicine)
     {
-        if ($medicine->prescriptionItems()->exists()) {
-            return redirect()->route('admin.inventory.index')
-                ->with('error', 'Cannot delete medicine with existing prescriptions.');
-        }
+        try {
+            $medicine->setConnection('mysql');
+            
+            if ($medicine->prescriptionItems()->exists()) {
+                return redirect()->route('admin.inventory.index')
+                    ->with('error', 'Cannot delete medicine with existing prescriptions.');
+            }
 
-        $medicine->delete();
-        return redirect()->route('admin.inventory.index')
-            ->with('success', 'Medicine removed from inventory.');
+            $medicine->delete();
+            return redirect()->route('admin.inventory.index')
+                ->with('success', 'Medicine removed from inventory.');
+        } catch (\Exception $e) {
+            \Log::error('Doctor Medicine Delete Error: ' . $e->getMessage());
+            return redirect()->route('admin.inventory.index')
+                ->with('error', 'Unable to delete medicine. Please try again.');
+        }
     }
 
     public function adjustStock(Request $request, Medicine $medicine)
@@ -127,7 +144,9 @@ class InventoryController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($medicine, $validated) {
+            DB::connection('mysql')->transaction(function () use ($medicine, $validated) {
+                $medicine->setConnection('mysql');
+                
                 if ($validated['adjustment_type'] === 'add') {
                     $medicine->increment('current_stock', $validated['quantity']);
                 } else {
@@ -148,6 +167,7 @@ class InventoryController extends Controller
             return redirect()->route('admin.inventory.index')
                 ->with('success', 'Stock adjusted successfully.');
         } catch (\Exception $e) {
+            \Log::error('Doctor Stock Adjustment Error: ' . $e->getMessage());
             return redirect()->back()
                 ->with('error', $e->getMessage())
                 ->withInput();
