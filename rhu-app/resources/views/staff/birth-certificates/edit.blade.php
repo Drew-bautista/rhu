@@ -7,8 +7,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h2><i class="fas fa-certificate me-2"></i>Create Birth Certificate</h2>
-                            <a href="{{ route('staff.birth-certificates.index') }}" class="text-dark" style="font-size: 1.25rem;">
+                            <h2><i class="fas fa-edit me-2"></i>Edit Birth Certificate</h2>
+                            <a href="{{ route('staff.birth-certificates.show', $birthCertificate->id) }}" class="text-dark" style="font-size: 1.25rem;">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                         </div>
@@ -23,6 +23,13 @@
                             </div>
                         @endif
 
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         @if(session('error'))
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 {{ session('error') }}
@@ -30,8 +37,16 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('staff.birth-certificates.store') }}" method="POST">
+                        <form action="{{ route('staff.birth-certificates.update', $birthCertificate->id) }}" method="POST">
                             @csrf
+                            @method('PUT')
+
+                            {{-- Registry Number Display --}}
+                            @if($birthCertificate->registry_number)
+                                <div class="alert alert-info">
+                                    <strong>Registry Number:</strong> {{ $birthCertificate->registry_number }}
+                                </div>
+                            @endif
 
                             {{-- Child Information --}}
                             <div class="mb-4">
@@ -41,60 +56,60 @@
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">First Name <span class="text-danger">*</span></label>
                                         <input type="text" name="child_first_name" class="form-control" 
-                                            value="{{ old('child_first_name') }}" required>
+                                            value="{{ old('child_first_name', $birthCertificate->child_first_name) }}" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Middle Name</label>
                                         <input type="text" name="child_middle_name" class="form-control" 
-                                            value="{{ old('child_middle_name') }}">
+                                            value="{{ old('child_middle_name', $birthCertificate->child_middle_name) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Last Name <span class="text-danger">*</span></label>
                                         <input type="text" name="child_last_name" class="form-control" 
-                                            value="{{ old('child_last_name') }}" required>
+                                            value="{{ old('child_last_name', $birthCertificate->child_last_name) }}" required>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Sex <span class="text-danger">*</span></label>
                                         <select name="child_sex" class="form-control" required>
                                             <option value="">-- Select --</option>
-                                            <option value="Male" {{ old('child_sex') == 'Male' ? 'selected' : '' }}>Male</option>
-                                            <option value="Female" {{ old('child_sex') == 'Female' ? 'selected' : '' }}>Female</option>
+                                            <option value="Male" {{ old('child_sex', $birthCertificate->child_sex) == 'Male' ? 'selected' : '' }}>Male</option>
+                                            <option value="Female" {{ old('child_sex', $birthCertificate->child_sex) == 'Female' ? 'selected' : '' }}>Female</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Date of Birth <span class="text-danger">*</span></label>
                                         <input type="date" name="date_of_birth" class="form-control" 
-                                            value="{{ old('date_of_birth') }}" required>
+                                            value="{{ old('date_of_birth', $birthCertificate->date_of_birth ? \Carbon\Carbon::parse($birthCertificate->date_of_birth)->format('Y-m-d') : '') }}" required>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Time of Birth</label>
                                         <input type="time" name="time_of_birth" class="form-control" 
-                                            value="{{ old('time_of_birth') }}">
+                                            value="{{ old('time_of_birth', $birthCertificate->time_of_birth) }}">
                                     </div>
                                     <div class="col-md-3 mb-3">
-                                        <label class="form-label">Type of Birth</label>
-                                        <select name="multiple_birth" class="form-control">
+                                        <label class="form-label">Type of Birth <span class="text-danger">*</span></label>
+                                        <select name="type_of_birth" class="form-control" required>
                                             <option value="">-- Select --</option>
-                                            <option value="Single" {{ old('multiple_birth') == 'Single' ? 'selected' : '' }}>Single</option>
-                                            <option value="Twin" {{ old('multiple_birth') == 'Twin' ? 'selected' : '' }}>Twin</option>
-                                            <option value="Triplet" {{ old('multiple_birth') == 'Triplet' ? 'selected' : '' }}>Triplet</option>
-                                            <option value="Other" {{ old('multiple_birth') == 'Other' ? 'selected' : '' }}>Other</option>
+                                            <option value="Single" {{ old('type_of_birth', $birthCertificate->type_of_birth) == 'Single' ? 'selected' : '' }}>Single</option>
+                                            <option value="Twin" {{ old('type_of_birth', $birthCertificate->type_of_birth) == 'Twin' ? 'selected' : '' }}>Twin</option>
+                                            <option value="Triplet" {{ old('type_of_birth', $birthCertificate->type_of_birth) == 'Triplet' ? 'selected' : '' }}>Triplet</option>
+                                            <option value="Multiple" {{ old('type_of_birth', $birthCertificate->type_of_birth) == 'Multiple' ? 'selected' : '' }}>Multiple</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Place of Birth <span class="text-danger">*</span></label>
                                         <input type="text" name="place_of_birth" class="form-control" 
-                                            value="{{ old('place_of_birth') }}" required>
+                                            value="{{ old('place_of_birth', $birthCertificate->place_of_birth) }}" required>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Birth Weight (kg)</label>
                                         <input type="number" step="0.01" min="0" max="10" name="birth_weight" class="form-control" 
-                                            value="{{ old('birth_weight') }}">
+                                            value="{{ old('birth_weight', $birthCertificate->birth_weight) }}">
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label class="form-label">Birth Length (cm)</label>
                                         <input type="number" min="0" max="100" name="birth_length" class="form-control" 
-                                            value="{{ old('birth_length') }}">
+                                            value="{{ old('birth_length', $birthCertificate->birth_length) }}">
                                     </div>
                                 </div>
                             </div>
@@ -107,41 +122,51 @@
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">First Name <span class="text-danger">*</span></label>
                                         <input type="text" name="mother_first_name" class="form-control" 
-                                            value="{{ old('mother_first_name') }}" required>
+                                            value="{{ old('mother_first_name', $birthCertificate->mother_first_name) }}" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Middle Name</label>
                                         <input type="text" name="mother_middle_name" class="form-control" 
-                                            value="{{ old('mother_middle_name') }}">
+                                            value="{{ old('mother_middle_name', $birthCertificate->mother_middle_name) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Last Name <span class="text-danger">*</span></label>
                                         <input type="text" name="mother_last_name" class="form-control" 
-                                            value="{{ old('mother_last_name') }}" required>
+                                            value="{{ old('mother_last_name', $birthCertificate->mother_last_name) }}" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Maiden Name</label>
+                                        <input type="text" name="mother_maiden_name" class="form-control" 
+                                            value="{{ old('mother_maiden_name', $birthCertificate->mother_maiden_name) }}">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Date of Birth</label>
+                                        <input type="date" name="mother_date_of_birth" class="form-control" 
+                                            value="{{ old('mother_date_of_birth', $birthCertificate->mother_date_of_birth ? \Carbon\Carbon::parse($birthCertificate->mother_date_of_birth)->format('Y-m-d') : '') }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Age at Birth</label>
                                         <input type="number" min="10" max="60" name="mother_age_at_birth" class="form-control" 
-                                            value="{{ old('mother_age_at_birth') }}">
+                                            value="{{ old('mother_age_at_birth', $birthCertificate->mother_age_at_birth) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Citizenship</label>
                                         <input type="text" name="mother_citizenship" class="form-control" 
-                                            value="{{ old('mother_citizenship', 'Filipino') }}">
+                                            value="{{ old('mother_citizenship', $birthCertificate->mother_citizenship) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Religion</label>
                                         <input type="text" name="mother_religion" class="form-control" 
-                                            value="{{ old('mother_religion') }}">
+                                            value="{{ old('mother_religion', $birthCertificate->mother_religion) }}">
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label class="form-label">Occupation</label>
                                         <input type="text" name="mother_occupation" class="form-control" 
-                                            value="{{ old('mother_occupation') }}">
+                                            value="{{ old('mother_occupation', $birthCertificate->mother_occupation) }}">
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-12 mb-3">
                                         <label class="form-label">Address <span class="text-danger">*</span></label>
-                                        <textarea name="mother_address" class="form-control" rows="2" required>{{ old('mother_address') }}</textarea>
+                                        <textarea name="mother_address" class="form-control" rows="2" required>{{ old('mother_address', $birthCertificate->mother_address) }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -154,41 +179,46 @@
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">First Name</label>
                                         <input type="text" name="father_first_name" class="form-control" 
-                                            value="{{ old('father_first_name') }}">
+                                            value="{{ old('father_first_name', $birthCertificate->father_first_name) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Middle Name</label>
                                         <input type="text" name="father_middle_name" class="form-control" 
-                                            value="{{ old('father_middle_name') }}">
+                                            value="{{ old('father_middle_name', $birthCertificate->father_middle_name) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Last Name</label>
                                         <input type="text" name="father_last_name" class="form-control" 
-                                            value="{{ old('father_last_name') }}">
+                                            value="{{ old('father_last_name', $birthCertificate->father_last_name) }}">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Date of Birth</label>
+                                        <input type="date" name="father_date_of_birth" class="form-control" 
+                                            value="{{ old('father_date_of_birth', $birthCertificate->father_date_of_birth ? \Carbon\Carbon::parse($birthCertificate->father_date_of_birth)->format('Y-m-d') : '') }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Age at Birth</label>
                                         <input type="number" min="15" max="80" name="father_age_at_birth" class="form-control" 
-                                            value="{{ old('father_age_at_birth') }}">
+                                            value="{{ old('father_age_at_birth', $birthCertificate->father_age_at_birth) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Citizenship</label>
                                         <input type="text" name="father_citizenship" class="form-control" 
-                                            value="{{ old('father_citizenship', 'Filipino') }}">
+                                            value="{{ old('father_citizenship', $birthCertificate->father_citizenship) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Religion</label>
                                         <input type="text" name="father_religion" class="form-control" 
-                                            value="{{ old('father_religion') }}">
+                                            value="{{ old('father_religion', $birthCertificate->father_religion) }}">
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label class="form-label">Occupation</label>
                                         <input type="text" name="father_occupation" class="form-control" 
-                                            value="{{ old('father_occupation') }}">
+                                            value="{{ old('father_occupation', $birthCertificate->father_occupation) }}">
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label class="form-label">Address</label>
-                                        <textarea name="father_address" class="form-control" rows="2">{{ old('father_address') }}</textarea>
+                                        <textarea name="father_address" class="form-control" rows="2">{{ old('father_address', $birthCertificate->father_address) }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -201,44 +231,39 @@
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Attendant Name</label>
                                         <input type="text" name="attendant_name" class="form-control" 
-                                            value="{{ old('attendant_name') }}">
+                                            value="{{ old('attendant_name', $birthCertificate->attendant_name) }}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Attendant Type</label>
                                         <select name="attendant_type" class="form-control">
                                             <option value="">-- Select --</option>
-                                            <option value="Doctor" {{ old('attendant_type') == 'Doctor' ? 'selected' : '' }}>Doctor</option>
-                                            <option value="Midwife" {{ old('attendant_type') == 'Midwife' ? 'selected' : '' }}>Midwife</option>
-                                            <option value="Nurse" {{ old('attendant_type') == 'Nurse' ? 'selected' : '' }}>Nurse</option>
-                                            <option value="Hilot" {{ old('attendant_type') == 'Hilot' ? 'selected' : '' }}>Hilot</option>
-                                            <option value="Others" {{ old('attendant_type') == 'Others' ? 'selected' : '' }}>Others</option>
+                                            <option value="Doctor" {{ old('attendant_type', $birthCertificate->attendant_type) == 'Doctor' ? 'selected' : '' }}>Doctor</option>
+                                            <option value="Midwife" {{ old('attendant_type', $birthCertificate->attendant_type) == 'Midwife' ? 'selected' : '' }}>Midwife</option>
+                                            <option value="Nurse" {{ old('attendant_type', $birthCertificate->attendant_type) == 'Nurse' ? 'selected' : '' }}>Nurse</option>
+                                            <option value="Hilot" {{ old('attendant_type', $birthCertificate->attendant_type) == 'Hilot' ? 'selected' : '' }}>Hilot</option>
+                                            <option value="Others" {{ old('attendant_type', $birthCertificate->attendant_type) == 'Others' ? 'selected' : '' }}>Others</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Status <span class="text-danger">*</span></label>
-                                        <select name="status" class="form-control" required id="statusSelect" onchange="updateRegistryPreview()">
-                                            <option value="Draft" {{ old('status', 'Draft') == 'Draft' ? 'selected' : '' }}>Draft</option>
-                                            <option value="Registered" {{ old('status') == 'Registered' ? 'selected' : '' }}>Registered</option>
-                                            <option value="Issued" {{ old('status') == 'Issued' ? 'selected' : '' }}>Issued</option>
+                                        <select name="status" class="form-control" required>
+                                            <option value="">-- Select --</option>
+                                            <option value="Draft" {{ old('status', $birthCertificate->status) == 'Draft' ? 'selected' : '' }}>Draft</option>
+                                            <option value="Registered" {{ old('status', $birthCertificate->status) == 'Registered' ? 'selected' : '' }}>Registered</option>
+                                            <option value="Issued" {{ old('status', $birthCertificate->status) == 'Issued' ? 'selected' : '' }}>Issued</option>
                                         </select>
                                         <small class="text-muted">Registry number will be auto-generated for Registered/Issued status</small>
-                                        <div id="registryPreview" class="mt-2" style="display: none;">
-                                            <div class="alert alert-info">
-                                                <strong>Registry Number Preview:</strong> <span id="previewNumber"></span><br>
-                                                <small>This number will be automatically assigned when you save</small>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Date Registered</label>
                                         <input type="date" name="date_registered" class="form-control" 
-                                            value="{{ old('date_registered') }}">
+                                            value="{{ old('date_registered', $birthCertificate->date_registered ? \Carbon\Carbon::parse($birthCertificate->date_registered)->format('Y-m-d') : '') }}">
                                         <small class="text-muted">Leave blank to auto-fill with today's date</small>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Registered By</label>
                                         <input type="text" name="registered_by" class="form-control" 
-                                            value="{{ old('registered_by') }}">
+                                            value="{{ old('registered_by', $birthCertificate->registered_by) }}">
                                         <small class="text-muted">Leave blank to auto-fill with your name</small>
                                     </div>
                                 </div>
@@ -246,7 +271,7 @@
 
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Create Birth Certificate
+                                    <i class="fas fa-save me-2"></i>Update Birth Certificate
                                 </button>
                             </div>
                         </form>
@@ -256,27 +281,3 @@
         </div>
     </div>
 @endsection
-
-<script>
-function updateRegistryPreview() {
-    const statusSelect = document.getElementById('statusSelect');
-    const registryPreview = document.getElementById('registryPreview');
-    const previewNumber = document.getElementById('previewNumber');
-    
-    if (statusSelect.value === 'Registered' || statusSelect.value === 'Issued') {
-        // Generate preview registry number
-        const currentYear = new Date().getFullYear();
-        const previewNum = currentYear + '-BC-' + String(Math.floor(Math.random() * 9999) + 1).padStart(4, '0');
-        
-        previewNumber.textContent = previewNum;
-        registryPreview.style.display = 'block';
-    } else {
-        registryPreview.style.display = 'none';
-    }
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    updateRegistryPreview();
-});
-</script>

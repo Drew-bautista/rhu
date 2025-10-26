@@ -12,12 +12,18 @@ class StaffInventoryController extends Controller
 {
     public function index()
     {
-        $medicines = Medicine::all();
-        $lowStockItems = Medicine::whereRaw('current_stock <= minimum_stock')->get();
-        $expiredItems = Medicine::where('expiry_date', '<', now())->get();
-        $outOfStockItems = Medicine::where('current_stock', '<=', 0)->get();
-        
-        return view('staff.inventory.index', compact('medicines', 'lowStockItems', 'expiredItems', 'outOfStockItems'));
+        try {
+            // Explicitly use mysql connection for all queries
+            $medicines = Medicine::on('mysql')->get();
+            $lowStockItems = Medicine::on('mysql')->whereRaw('current_stock <= minimum_stock')->get();
+            $expiredItems = Medicine::on('mysql')->where('expiry_date', '<', now())->get();
+            $outOfStockItems = Medicine::on('mysql')->where('current_stock', '<=', 0)->get();
+            
+            return view('staff.inventory.index', compact('medicines', 'lowStockItems', 'expiredItems', 'outOfStockItems'));
+        } catch (\Exception $e) {
+            \Log::error('Staff Inventory Index Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Unable to load inventory. Please contact administrator.');
+        }
     }
 
     public function create()
@@ -48,10 +54,17 @@ class StaffInventoryController extends Controller
             'notes' => 'nullable|string'
         ]);
 
-        Medicine::create($validated);
+        try {
+            Medicine::on('mysql')->create($validated);
 
-        return redirect()->route('staff.inventory.index')
-            ->with('success', 'Medicine added to inventory successfully.');
+            return redirect()->route('staff.inventory.index')
+                ->with('success', 'Medicine added to inventory successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Staff Medicine Create Error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Unable to add medicine. Please try again.');
+        }
     }
 
     public function show(Medicine $medicine)
@@ -94,22 +107,35 @@ class StaffInventoryController extends Controller
             'notes' => 'nullable|string'
         ]);
 
-        $medicine->update($validated);
+        try {
+            $medicine->update($validated);
 
-        return redirect()->route('staff.inventory.index')
-            ->with('success', 'Medicine updated successfully.');
+            return redirect()->route('staff.inventory.index')
+                ->with('success', 'Medicine updated successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Staff Medicine Update Error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Unable to update medicine. Please try again.');
+        }
     }
 
     public function destroy(Medicine $medicine)
     {
-        if ($medicine->prescriptionItems()->exists()) {
-            return redirect()->route('staff.inventory.index')
-                ->with('error', 'Cannot delete medicine with existing prescriptions.');
-        }
+        try {
+            if ($medicine->prescriptionItems()->exists()) {
+                return redirect()->route('staff.inventory.index')
+                    ->with('error', 'Cannot delete medicine with existing prescriptions.');
+            }
 
-        $medicine->delete();
-        return redirect()->route('staff.inventory.index')
-            ->with('success', 'Medicine removed from inventory.');
+            $medicine->delete();
+            return redirect()->route('staff.inventory.index')
+                ->with('success', 'Medicine removed from inventory.');
+        } catch (\Exception $e) {
+            \Log::error('Staff Medicine Delete Error: ' . $e->getMessage());
+            return redirect()->route('staff.inventory.index')
+                ->with('error', 'Unable to delete medicine. Please try again.');
+        }
     }
 
 }

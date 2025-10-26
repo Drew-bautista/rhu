@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Inventory extends Model
 {
     use HasFactory;
+    
+    protected $connection = 'mysql';
 
     protected $table = 'inventory';
 

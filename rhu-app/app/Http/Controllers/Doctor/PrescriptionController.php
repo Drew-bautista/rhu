@@ -45,14 +45,15 @@ class PrescriptionController extends Controller
         try {
             \Log::info('Prescription create method called');
             
-            $appointments = Appointment::where('status', 'pending')
+            // Explicitly use mysql connection for all queries
+            $appointments = Appointment::on('mysql')->where('status', 'pending')
                 ->orWhere('status', 'confirmed')
                 ->latest()
                 ->get();
                 
             \Log::info('Appointments loaded: ' . $appointments->count());
             
-            $medicines = Medicine::active()->orderBy('medicine_name')->get();
+            $medicines = Medicine::on('mysql')->where('status', 'Active')->orderBy('medicine_name')->get();
             
             \Log::info('Medicines loaded: ' . $medicines->count());
             

@@ -12,12 +12,17 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $medicines = Medicine::all();
-        $lowStockItems = Medicine::whereRaw('current_stock <= minimum_stock')->get();
-        $expiredItems = Medicine::where('expiry_date', '<', now())->get();
-        $outOfStockItems = Medicine::where('current_stock', '<=', 0)->get();
-        
-        return view('admin.inventory.index', compact('medicines', 'lowStockItems', 'expiredItems', 'outOfStockItems'));
+        try {
+            $medicines = Medicine::all();
+            $lowStockItems = Medicine::whereRaw('current_stock <= minimum_stock')->get();
+            $expiredItems = Medicine::where('expiry_date', '<', now())->get();
+            $outOfStockItems = Medicine::where('current_stock', '<=', 0)->get();
+            
+            return view('admin.inventory.index', compact('medicines', 'lowStockItems', 'expiredItems', 'outOfStockItems'));
+        } catch (\Exception $e) {
+            \Log::error('Inventory Index Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Unable to load inventory. Please contact administrator.');
+        }
     }
 
     public function create()

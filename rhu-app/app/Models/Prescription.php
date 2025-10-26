@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Prescription extends Model
 {
     use HasFactory;
+    
+    protected $connection = 'mysql';
 
     protected $fillable = [
         'appointment_id',

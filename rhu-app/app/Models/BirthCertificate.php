@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class BirthCertificate extends Model
 {
     use HasFactory;
-
+    
+    protected $connection = 'mysql';
     protected $table = 'birth_certificates';
 
     protected $fillable = [
