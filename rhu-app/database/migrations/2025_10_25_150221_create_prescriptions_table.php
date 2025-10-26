@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip if table already exists (for deployment compatibility)
+        if (Schema::hasTable('prescriptions')) {
+            return;
+        }
+        
         Schema::create('prescriptions', function (Blueprint $table) {
             $table->id();
             
