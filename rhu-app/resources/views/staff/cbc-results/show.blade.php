@@ -138,18 +138,6 @@
                                 <strong>Basophils:</strong> {{ $cbcResult->basophils ?? 'N/A' }}
                             </p>
                             <p>
-                                <strong>Newborn Screening:</strong> {{ $cbcResult->newborn_screening ?? 'N/A' }}
-                            </p>
-                            <p>
-                                <strong>Hepa B Screening:</strong> {{ $cbcResult->hepa_b_screening ?? 'N/A' }}
-                            </p>
-                            <p>
-                                <strong>Fasting Blood Sugar:</strong> {{ $cbcResult->fasting_blood_sugar ?? 'N/A' }}
-                            </p>
-                            <p>
-                                <strong>Cholesterol:</strong> {{ $cbcResult->cholesterol ?? 'N/A' }}
-                            </p>
-                            <p>
                                 <strong>Remarks:</strong> {{ $cbcResult->remarks ?? 'N/A' }}
                             </p>
                         </div>

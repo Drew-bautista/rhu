@@ -12,6 +12,7 @@ use App\Models\Vaccine;
 use App\Models\AnimalBiteCase;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReportController extends Controller
 {
@@ -23,78 +24,17 @@ class ReportController extends Controller
         if ($request->has('start_date') && $request->has('end_date')) {
             $query->whereBetween('date_of_appointment', [$request->start_date, $request->end_date]);
         }
-        
+
         // Filter by patient name
         if ($request->has('patient_name') && $request->patient_name) {
             $query->where('name', 'like', '%' . $request->patient_name . '%');
         }
         
         // Enhanced service filtering with multiple variations
-        if ($request->has('service') && $request->service) {
-            $service = $request->service;
-            
-            switch ($service) {
-                case 'General Consultation':
-                    $query->where(function($q) {
-                        $q->where('service', 'General Consultation')
-                          ->orWhere('service', 'like', '%consultation%')
-                          ->orWhere('service', 'like', '%general%')
-                          ->orWhere('service', 'Checkup')
-                          ->orWhere('service', 'Medical Consultation');
-                    });
-                    break;
-                    
-                case 'Prenatal':
-                    $query->where(function($q) {
-                        $q->where('service', 'Prenatal')
-                          ->orWhere('service', 'like', '%prenatal%')
-                          ->orWhere('service', 'like', '%pregnancy%')
-                          ->orWhere('service', 'Prenatal Checkup')
-                          ->orWhere('service', 'Prenatal Care');
-                    });
-                    break;
-                    
-                case 'Dental':
-                    $query->where(function($q) {
-                        $q->where('service', 'Dental')
-                          ->orWhere('service', 'like', '%dental%')
-                          ->orWhere('service', 'like', '%tooth%')
-                          ->orWhere('service', 'Dental Checkup')
-                          ->orWhere('service', 'Dental Care')
-                          ->orWhere('service', 'Oral Health');
-                    });
-                    break;
-                    
-                case 'Vaccination':
-                    $query->where(function($q) {
-                        $q->where('service', 'Vaccination')
-                          ->orWhere('service', 'like', '%vaccination%')
-                          ->orWhere('service', 'like', '%vaccine%')
-                          ->orWhere('service', 'like', '%immunization%')
-                          ->orWhere('service', 'Immunization')
-                          ->orWhere('service', 'Vaccine');
-                    });
-                    break;
-                    
-                case 'Laboratory':
-                    $query->where(function($q) {
-                        $q->where('service', 'Laboratory')
-                          ->orWhere('service', 'like', '%laboratory%')
-                          ->orWhere('service', 'like', '%lab%')
-                          ->orWhere('service', 'like', '%test%')
-                          ->orWhere('service', 'Blood Test')
-                          ->orWhere('service', 'CBC')
-                          ->orWhere('service', 'Urinalysis')
-                          ->orWhere('service', 'Lab Test');
-                    });
-                    break;
-                    
-                default:
-                    $query->where('service', $service);
-                    break;
-            }
+        if ($request->filled('service')) {
+            $this->applyServiceFilter($query, $request->service);
         }
-        
+
         $appointments = $query->orderBy('date_of_appointment', 'desc')->paginate(20);
         
         // Get filtered statistics based on current filters
@@ -103,6 +43,12 @@ class ReportController extends Controller
         // Apply same filters to statistics
         if ($request->has('start_date') && $request->has('end_date')) {
             $statisticsQuery->whereBetween('date_of_appointment', [$request->start_date, $request->end_date]);
+        }
+        if ($request->filled('patient_name')) {
+            $statisticsQuery->where('name', 'like', '%' . $request->patient_name . '%');
+        }
+        if ($request->filled('service')) {
+            $this->applyServiceFilter($statisticsQuery, $request->service);
         }
         
         $statistics = [
@@ -118,6 +64,72 @@ class ReportController extends Controller
         ];
         
         return view('admin.reports.index', compact('appointments', 'statistics'));
+    }
+
+    private function applyServiceFilter(Builder $query, string $service): void
+    {
+        $normalized = strtolower(trim($service));
+
+        $serviceKeywords = [
+            'general consultation' => [
+                'general consultation',
+                'consultation',
+                'checkup',
+                'check-up',
+                'medical consultation',
+                'health assessment',
+                'physical exam',
+                'physical examination',
+            ],
+            'prenatal' => [
+                'prenatal',
+                'pregnancy',
+                'prenatal checkup',
+                'prenatal check-up',
+                'antenatal',
+            ],
+            'dental' => [
+                'dental',
+                'tooth',
+                'oral health',
+                'dentist',
+                'dental care',
+            ],
+            'vaccination' => [
+                'vaccination',
+                'vaccine',
+                'immunization',
+                'immunisation',
+                'inoculation',
+            ],
+            'laboratory' => [
+                'laboratory',
+                'lab',
+                'test',
+                'blood test',
+                'cbc',
+                'urinalysis',
+                'hematology',
+                'chemistry',
+            ],
+        ];
+
+        $keywords = collect($serviceKeywords[$normalized] ?? [$normalized])
+            ->map(fn ($term) => strtolower(trim($term)))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($keywords->isEmpty()) {
+            return;
+        }
+
+        $query->where(function (Builder $inner) use ($keywords) {
+            $keywords->each(function (string $keyword, int $index) use ($inner) {
+                $method = $index === 0 ? 'whereRaw' : 'orWhereRaw';
+                $inner->{$method}('LOWER(service) LIKE ?', ['%' . $keyword . '%']);
+            });
+        });
     }
 
     public function patientHistory($patientName)

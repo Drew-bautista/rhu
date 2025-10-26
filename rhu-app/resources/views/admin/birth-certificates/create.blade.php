@@ -256,10 +256,6 @@
                                             value="{{ old('registered_by') }}">
                                         <small class="text-muted">Leave blank to auto-fill with your name</small>
                                     </div>
-                                    <div class="col-md-12 mb-3">
-                                        <label class="form-label">Remarks</label>
-                                        <textarea name="remarks" class="form-control" rows="3">{{ old('remarks') }}</textarea>
-                                    </div>
                                 </div>
                             </div>
 

@@ -59,6 +59,11 @@ class Prescription extends Model
         return $this->belongsTo(Inventory::class, 'inventory_id');
     }
 
+    public function dispensedBy()
+    {
+        return $this->belongsTo(User::class, 'dispensed_by');
+    }
+
     // Generate prescription number
     public static function generatePrescriptionNumber()
     {

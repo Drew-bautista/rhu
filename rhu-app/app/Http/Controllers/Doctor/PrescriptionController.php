@@ -13,18 +13,17 @@ class PrescriptionController extends Controller
     public function index()
     {
         try {
-            // Test if we can even reach this point
-            \Log::info('Prescription index method called');
-            
-            // Try to create empty pagination first
-            $prescriptions = new \Illuminate\Pagination\LengthAwarePaginator(
-                collect(), 0, 20, 1, ['path' => request()->url()]
-            );
-            
-            \Log::info('Empty pagination created successfully');
-            
-            // Try to return view with empty data
-            return view('admin.prescriptions.index', compact('prescriptions'));
+            $prescriptions = Prescription::on('mysql')->with([
+                    'appointment',
+                    'prescriptionItems.medicine',
+                    'prescribedBy'
+                ])
+                ->latest()
+                ->paginate(20);
+
+            $pendingCount = Prescription::on('mysql')->where('status', 'pending')->count();
+
+            return view('admin.prescriptions.index', compact('prescriptions', 'pendingCount'));
             
         } catch (\Exception $e) {
             \Log::error('Prescription Index Error: ' . $e->getMessage());
@@ -288,8 +287,25 @@ class PrescriptionController extends Controller
 
     public function show(Prescription $prescription)
     {
-        $prescription->load(['appointment', 'prescriptionItems.medicine']);
-        return view('admin.prescriptions.show', compact('prescription'));
+        $prescription->setConnection('mysql');
+        $prescription->load(['appointment', 'prescriptionItems.medicine', 'prescribedBy', 'dispensedBy']);
+
+        $prescriptionItems = $prescription->prescriptionItems;
+
+        $hasSufficientStock = $prescriptionItems->every(function ($item) {
+            return $item->medicine && $item->medicine->current_stock >= $item->quantity;
+        });
+
+        $insufficientItems = $prescriptionItems->filter(function ($item) {
+            return !$item->medicine || $item->medicine->current_stock < $item->quantity;
+        });
+
+        return view('admin.prescriptions.show', compact(
+            'prescription',
+            'prescriptionItems',
+            'hasSufficientStock',
+            'insufficientItems'
+        ));
     }
 
     public function edit(Prescription $prescription)
@@ -376,7 +392,7 @@ class PrescriptionController extends Controller
 
     public function pending()
     {
-        $prescriptions = Prescription::with(['appointment', 'prescriptionItems.medicine'])
+        $prescriptions = Prescription::on('mysql')->with(['appointment', 'prescriptionItems.medicine'])
             ->where('status', 'pending')
             ->latest()
             ->paginate(20);

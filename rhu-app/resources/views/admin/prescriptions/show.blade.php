@@ -47,24 +47,60 @@
                 {{-- Medicine Information --}}
                 <h5 class="text-primary mt-4">Medicine Information</h5>
                 <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Medicine Name:</strong> {{ $prescription->inventory->medicine_name }}</p>
-                        <p><strong>Generic Name:</strong> {{ $prescription->inventory->generic_name ?? 'N/A' }}</p>
-                        <p><strong>Dosage Strength:</strong> {{ $prescription->inventory->dosage_strength ?? 'N/A' }}</p>
-                        <p><strong>Unit of Measure:</strong> {{ $prescription->inventory->unit_of_measure }}</p>
+
+                @if($prescriptionItems->isEmpty())
+                    <p class="text-muted">No medicines recorded for this prescription.</p>
+                @else
+                    <div class="table-responsive mb-3">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr class="table-light">
+                                    <th>#</th>
+                                    <th>Medicine</th>
+                                    <th>Dosage</th>
+                                    <th>Quantity</th>
+                                    <th>Frequency / Duration</th>
+                                    <th>Instructions</th>
+                                    <th>Current Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($prescriptionItems as $index => $item)
+                                    <tr class="{{ optional($item->medicine)->current_stock < $item->quantity ? 'table-danger' : '' }}">
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>
+                                            @if($item->medicine)
+                                                <strong>{{ $item->medicine->medicine_name }}</strong><br>
+                                                <small class="text-muted">{{ $item->medicine->generic_name ?? 'N/A' }}</small><br>
+                                                <small class="text-info">{{ $item->medicine->strength ?? $item->medicine->dosage_form ?? 'N/A' }}</small>
+                                            @else
+                                                <span class="text-danger">Medicine record not found</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $item->dosage }}</td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ $item->quantity }} {{ optional($item->medicine)->unit ?? 'units' }}</span>
+                                        </td>
+                                        <td>{{ $item->frequency }}<br><small class="text-muted">{{ $item->duration }}</small></td>
+                                        <td>{{ $item->instructions ?? 'N/A' }}</td>
+                                        <td>
+                                            @if($item->medicine)
+                                                @if($item->medicine->current_stock >= $item->quantity)
+                                                    <span class="badge bg-success">{{ $item->medicine->current_stock }} {{ $item->medicine->unit ?? 'units' }}</span>
+                                                @else
+                                                    <span class="badge bg-danger">{{ $item->medicine->current_stock }} {{ $item->medicine->unit ?? 'units' }}</span>
+                                                    <br><small class="text-danger">Insufficient Stock</small>
+                                                @endif
+                                            @else
+                                                <span class="badge bg-secondary">N/A</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Quantity Prescribed:</strong> {{ $prescription->quantity_prescribed }} {{ $prescription->inventory->unit_of_measure }}</p>
-                        <p><strong>Available Stock:</strong> 
-                            @if($prescription->inventory->quantity_in_stock >= $prescription->quantity_prescribed)
-                                <span class="text-success">{{ $prescription->inventory->quantity_in_stock }} {{ $prescription->inventory->unit_of_measure }}</span>
-                            @else
-                                <span class="text-danger">{{ $prescription->inventory->quantity_in_stock }} {{ $prescription->inventory->unit_of_measure }} (Insufficient)</span>
-                            @endif
-                        </p>
-                    </div>
-                </div>
+                @endif
 
                 {{-- Prescription Details --}}
                 <h5 class="text-primary mt-4">Prescription Details</h5>
@@ -79,11 +115,7 @@
                     </div>
                     <div class="col-md-6">
                         <p><strong>Prescribed By:</strong> 
-                            @if($prescription->prescribedBy)
-                                {{ $prescription->prescribedBy->firstname }} {{ $prescription->prescribedBy->lastname }}
-                            @else
-                                N/A
-                            @endif
+                            {{ optional($prescription->prescribedBy)->firstname }} {{ optional($prescription->prescribedBy)->lastname }}
                         </p>
                         @if($prescription->status == 'dispensed')
                             <p><strong>Dispensed At:</strong> {{ $prescription->dispensed_at ? \Carbon\Carbon::parse($prescription->dispensed_at)->format('F j, Y h:i A') : 'N/A' }}</p>
@@ -101,7 +133,7 @@
                 {{-- Action Buttons --}}
                 @if($prescription->status == 'pending')
                     <div class="mt-4 d-flex gap-2">
-                        @if($prescription->inventory->quantity_in_stock >= $prescription->quantity_prescribed)
+                        @if($hasSufficientStock)
                             <form action="{{ route('admin.prescriptions.dispense', $prescription->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('PATCH')
@@ -113,6 +145,16 @@
                             <button class="btn btn-secondary" disabled title="Insufficient Stock">
                                 <i class="fas fa-exclamation-triangle"></i> Insufficient Stock
                             </button>
+                            @if($insufficientItems->isNotEmpty())
+                                <ul class="mb-0 small text-danger">
+                                    @foreach($insufficientItems as $item)
+                                        <li>
+                                            {{ optional($item->medicine)->medicine_name ?? 'Unknown Medicine' }} &mdash;
+                                            Needed: {{ $item->quantity }}, Available: {{ optional($item->medicine)->current_stock ?? 0 }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         @endif
                         
                         <form action="{{ route('admin.prescriptions.cancel', $prescription->id) }}" method="POST" style="display: inline;">

@@ -10,6 +10,7 @@
                         <div>
                             <a href="{{ route('admin.prescriptions.pending') }}" class="btn btn-warning btn-sm me-2">
                                 <i class="fas fa-clock"></i> Pending Prescriptions
+                                <span class="badge bg-dark ms-1">{{ $pendingCount }}</span>
                             </a>
                         </div>
                     </div>
@@ -62,10 +63,23 @@
                                         <td>{{ $prescription->created_at->format('M d, Y') }}</td>
                                         <td>{{ $prescription->patient_name }}</td>
                                         <td>
-                                            <strong>{{ $prescription->inventory->medicine_name }}</strong><br>
-                                            <small class="text-muted">{{ $prescription->inventory->generic_name }}</small>
+                                            @php
+                                                $firstItem = $prescription->prescriptionItems->first();
+                                            @endphp
+                                            @if($firstItem && $firstItem->medicine)
+                                                <strong>{{ $firstItem->medicine->medicine_name }}</strong><br>
+                                                <small class="text-muted">{{ $firstItem->medicine->generic_name ?? 'N/A' }}</small>
+                                            @else
+                                                <span class="text-muted">No medicine data</span>
+                                            @endif
                                         </td>
-                                        <td>{{ $prescription->quantity_prescribed }} {{ $prescription->inventory->unit_of_measure }}</td>
+                                        <td>
+                                            @if($firstItem)
+                                                <span class="badge bg-primary">{{ $firstItem->quantity }} {{ optional($firstItem->medicine)->unit ?? 'units' }}</span>
+                                            @else
+                                                <span class="text-muted">N/A</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $prescription->dosage_instructions }}</td>
                                         <td>
                                             @if($prescription->prescribedBy)

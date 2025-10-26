@@ -6,12 +6,12 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Medicine Details</h2>
+                        <h2>Medicine Details: {{ $medicine->medicine_name }}</h2>
                         <div>
                             <a href="{{ route('staff.inventory.index') }}" class="btn btn-secondary me-2">
                                 <i class="fas fa-arrow-left"></i> Back to Inventory
                             </a>
-                            <a href="{{ route('staff.inventory.edit', $inventory->id) }}" class="btn btn-primary">
+                            <a href="{{ route('staff.inventory.edit', $medicine->id) }}" class="btn btn-primary">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                         </div>
@@ -27,25 +27,25 @@
                                     <table class="table table-borderless">
                                         <tr>
                                             <td><strong>Medicine Name:</strong></td>
-                                            <td>{{ $inventory->medicine_name }}</td>
+                                            <td>{{ $medicine->medicine_name }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Generic Name:</strong></td>
-                                            <td>{{ $inventory->generic_name ?? 'N/A' }}</td>
+                                            <td>{{ $medicine->generic_name ?? 'N/A' }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Brand Name:</strong></td>
-                                            <td>{{ $inventory->brand_name ?? 'N/A' }}</td>
+                                            <td>{{ $medicine->brand_name ?? 'N/A' }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Type:</strong></td>
                                             <td>
-                                                <span class="badge bg-info">{{ ucfirst($inventory->medicine_type) }}</span>
+                                                <span class="badge bg-info">{{ $medicine->dosage_form ? ucfirst($medicine->dosage_form) : 'N/A' }}</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Dosage Strength:</strong></td>
-                                            <td>{{ $inventory->dosage_strength }}</td>
+                                            <td>{{ $medicine->strength ?? 'N/A' }}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -62,24 +62,30 @@
                                         <tr>
                                             <td><strong>Current Stock:</strong></td>
                                             <td>
-                                                <span class="badge {{ $inventory->isLowStock() ? 'bg-danger' : 'bg-success' }}">
-                                                    {{ $inventory->quantity_in_stock }} {{ $inventory->unit_of_measure }}
+                                                <span class="badge {{ $medicine->current_stock <= 0 ? 'bg-danger' : ($medicine->is_low_stock ? 'bg-warning' : 'bg-success') }}">
+                                                    {{ $medicine->current_stock }} {{ $medicine->unit ?? 'units' }}
                                                 </span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Reorder Level:</strong></td>
-                                            <td>{{ $inventory->reorder_level }} {{ $inventory->unit_of_measure }}</td>
+                                            <td>{{ $medicine->minimum_stock }} {{ $medicine->unit ?? 'units' }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Expiry Date:</strong></td>
                                             <td>
-                                                @if($inventory->expiry_date)
-                                                    {{ $inventory->expiry_date->format('M d, Y') }}
-                                                    @if($inventory->expiry_date->isPast())
-                                                        <span class="badge bg-danger ms-2">Expired</span>
-                                                    @elseif($inventory->expiry_date->diffInDays() <= 30)
-                                                        <span class="badge bg-warning ms-2">Expiring Soon</span>
+                                                @if($medicine->expiry_date)
+                                                    @php
+                                                        $expiryDate = \Carbon\Carbon::parse($medicine->expiry_date);
+                                                        $daysUntilExpiry = now()->diffInDays($expiryDate, false);
+                                                    @endphp
+                                                    {{ $expiryDate->format('M d, Y') }}
+                                                    @if($daysUntilExpiry < 0)
+                                                        <span class="badge bg-danger ms-2">Expired {{ abs($daysUntilExpiry) }} days ago</span>
+                                                    @elseif($daysUntilExpiry == 0)
+                                                        <span class="badge bg-danger ms-2">Expires Today</span>
+                                                    @elseif($daysUntilExpiry <= 30)
+                                                        <span class="badge bg-warning ms-2">Expires in {{ $daysUntilExpiry }} days</span>
                                                     @endif
                                                 @else
                                                     N/A
@@ -88,7 +94,7 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Batch Number:</strong></td>
-                                            <td>{{ $inventory->batch_number ?? 'N/A' }}</td>
+                                            <td>{{ $medicine->batch_number ?? 'N/A' }}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -105,12 +111,12 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <p><strong>Supplier:</strong> {{ $inventory->supplier ?? 'N/A' }}</p>
-                                            <p><strong>Storage Location:</strong> {{ $inventory->storage_location ?? 'N/A' }}</p>
+                                            <p><strong>Manufacturer:</strong> {{ $medicine->manufacturer ?? 'N/A' }}</p>
+                                            <p><strong>Classification:</strong> {{ $medicine->classification ?? 'N/A' }}</p>
                                         </div>
                                         <div class="col-md-6">
                                             <p><strong>Notes:</strong></p>
-                                            <p class="text-muted">{{ $inventory->notes ?? 'No additional notes' }}</p>
+                                            <p class="text-muted">{{ $medicine->notes ?? $medicine->description ?? 'No additional notes' }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -118,7 +124,7 @@
                         </div>
                     </div>
 
-                    @if($prescriptions->count() > 0)
+                    @if($prescriptionItems->count() > 0)
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="mb-0">Prescription History</h5>
@@ -138,23 +144,23 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($prescriptions as $prescription)
+                                            @foreach($prescriptionItems as $item)
                                                 <tr>
-                                                    <td>{{ $prescription->created_at->format('M d, Y') }}</td>
-                                                    <td>{{ $prescription->patient_name }}</td>
-                                                    <td>{{ $prescription->quantity_prescribed }} {{ $inventory->unit_of_measure }}</td>
-                                                    <td>{{ $prescription->dosage_instructions }}</td>
-                                                    <td>{{ $prescription->duration_days }} days</td>
+                                                    <td>{{ $item->created_at->format('M d, Y') }}</td>
+                                                    <td>{{ optional($item->prescription)->patient_name ?? 'N/A' }}</td>
+                                                    <td>{{ $item->quantity }} {{ $medicine->unit ?? 'units' }}</td>
+                                                    <td>{{ $item->dosage ?? 'N/A' }} {{ $item->frequency ? '- ' . $item->frequency : '' }}</td>
+                                                    <td>{{ $item->duration ?? 'N/A' }}</td>
                                                     <td>
-                                                        @if($prescription->prescribedBy)
-                                                            {{ $prescription->prescribedBy->name }}
-                                                        @else
-                                                            N/A
-                                                        @endif
+                                                        {{ optional(optional($item->prescription)->prescribedBy)->firstname }}
+                                                        {{ optional(optional($item->prescription)->prescribedBy)->lastname }}
                                                     </td>
                                                     <td>
-                                                        <span class="badge bg-{{ $prescription->status == 'dispensed' ? 'success' : 'warning' }}">
-                                                            {{ ucfirst($prescription->status) }}
+                                                        @php
+                                                            $status = strtolower(optional($item->prescription)->status ?? 'pending');
+                                                        @endphp
+                                                        <span class="badge bg-{{ $status === 'dispensed' ? 'success' : ($status === 'pending' ? 'warning' : 'secondary') }}">
+                                                            {{ ucfirst($status) }}
                                                         </span>
                                                     </td>
                                                 </tr>

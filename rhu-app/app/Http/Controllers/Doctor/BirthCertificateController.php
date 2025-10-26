@@ -72,9 +72,7 @@ class BirthCertificateController extends Controller
                 'date_registered' => 'nullable|date',
                 'registered_by' => 'nullable|string|max:255',
                 'registrar_name' => 'nullable|string|max:255',
-                
-                // Additional Information
-                'remarks' => 'nullable|string|max:1000',
+
                 'status' => 'required|in:Draft,Registered,Issued',
             ]);
 
@@ -168,9 +166,7 @@ class BirthCertificateController extends Controller
                 'date_registered' => 'nullable|date',
                 'registered_by' => 'nullable|string|max:255',
                 'registrar_name' => 'nullable|string|max:255',
-                
-                // Additional Information
-                'remarks' => 'nullable|string|max:1000',
+
                 'status' => 'required|in:Draft,Registered,Issued',
             ]);
 

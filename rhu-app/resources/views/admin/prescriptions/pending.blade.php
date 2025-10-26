@@ -59,7 +59,10 @@
                             <tbody id="prescriptionTableBody">
                                 @forelse($prescriptions as $prescription)
                                     @foreach($prescription->prescriptionItems as $item)
-                                        <tr class="{{ $item->medicine->current_stock < $item->quantity ? 'table-danger' : '' }}">
+                                        @php
+                                            $medicine = $item->medicine;
+                                        @endphp
+                                        <tr class="{{ ($medicine && $medicine->current_stock < $item->quantity) ? 'table-danger' : '' }}">
                                             <td>{{ $prescription->created_at->format('M d, Y h:i A') }}</td>
                                             <td>
                                                 <strong>{{ $prescription->patient_name }}</strong>
@@ -68,19 +71,25 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <strong>{{ $item->medicine->medicine_name }}</strong><br>
-                                                <small class="text-muted">{{ $item->medicine->generic_name ?? 'N/A' }}</small><br>
-                                                <small class="text-info">{{ $item->medicine->dosage_strength ?? 'N/A' }}</small>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-primary">{{ $item->quantity }} {{ $item->medicine->unit_of_measure ?? 'pcs' }}</span>
-                                            </td>
-                                            <td>
-                                                @if($item->medicine->current_stock >= $item->quantity)
-                                                    <span class="badge bg-success">{{ $item->medicine->current_stock }} {{ $item->medicine->unit_of_measure ?? 'pcs' }}</span>
+                                                @if($medicine)
+                                                    <strong>{{ $medicine->medicine_name }}</strong><br>
+                                                    <small class="text-muted">{{ $medicine->generic_name ?? 'N/A' }}</small><br>
+                                                    <small class="text-info">{{ $medicine->strength ?? $medicine->dosage_form ?? 'N/A' }}</small>
                                                 @else
-                                                    <span class="badge bg-danger">{{ $item->medicine->current_stock }} {{ $item->medicine->unit_of_measure ?? 'pcs' }}</span>
+                                                    <span class="text-danger">Medicine record missing</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary">{{ $item->quantity }} {{ $medicine->unit ?? 'units' }}</span>
+                                            </td>
+                                            <td>
+                                                @if($medicine && $medicine->current_stock >= $item->quantity)
+                                                    <span class="badge bg-success">{{ $medicine->current_stock }} {{ $medicine->unit ?? 'units' }}</span>
+                                                @elseif($medicine)
+                                                    <span class="badge bg-danger">{{ $medicine->current_stock }} {{ $medicine->unit ?? 'units' }}</span>
                                                     <br><small class="text-danger">Insufficient Stock!</small>
+                                                @else
+                                                    <span class="badge bg-secondary">N/A</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -99,7 +108,7 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 
-                                                @if($item->medicine->current_stock >= $item->quantity)
+                                                @if($medicine && $medicine->current_stock >= $item->quantity)
                                                     <form action="{{ route('admin.prescriptions.dispense', $prescription->id) }}" 
                                                         method="POST" style="display: inline;">
                                                         @csrf
@@ -109,9 +118,13 @@
                                                             <i class="fas fa-check"></i> Dispense
                                                         </button>
                                                     </form>
-                                                @else
+                                                @elseif($medicine)
                                                     <button class="btn btn-secondary btn-sm mb-1" disabled title="Insufficient Stock">
                                                         <i class="fas fa-exclamation-triangle"></i> No Stock
+                                                    </button>
+                                                @else
+                                                    <button class="btn btn-secondary btn-sm mb-1" disabled title="Medicine Missing">
+                                                        <i class="fas fa-exclamation-triangle"></i> Medicine Missing
                                                     </button>
                                                 @endif
                                                 
