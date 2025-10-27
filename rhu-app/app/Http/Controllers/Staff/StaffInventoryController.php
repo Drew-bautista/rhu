@@ -81,11 +81,17 @@ class StaffInventoryController extends Controller
 
     public function edit(Medicine $medicine)
     {
-        return view('staff.inventory.edit', compact('medicine'));
+        $medicine->setConnection('mysql');
+
+        return view('staff.inventory.edit', [
+            'inventory' => $medicine,
+        ]);
     }
 
     public function update(Request $request, Medicine $medicine)
     {
+        $medicine->setConnection('mysql');
+
         $validated = $request->validate([
             'medicine_name' => 'required|string|max:255',
             'generic_name' => 'nullable|string|max:255',
