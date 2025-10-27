@@ -74,7 +74,9 @@ class InventoryController extends Controller
 
     public function edit(Medicine $medicine)
     {
-        return view('admin.inventory.edit', compact('medicine'));
+        return view('admin.inventory.edit', [
+            'inventory' => $medicine,
+        ]);
     }
 
     public function update(Request $request, Medicine $medicine)

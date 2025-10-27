@@ -97,15 +97,21 @@ class BirthCertificate extends Model
     }
 
     // Generate registry number
-    public static function generateRegistryNumber()
+    public static function generateRegistryNumber(): string
     {
-        $year = date('Y');
-        $lastRecord = self::whereYear('created_at', $year)
-            ->orderBy('id', 'desc')
-            ->first();
-        
-        $nextNumber = $lastRecord ? (intval(substr($lastRecord->registry_number, -4)) + 1) : 1;
-        
+        $year = now()->year;
+
+        $lastRegistryNumber = self::whereNotNull('registry_number')
+            ->where('registry_number', 'like', $year . '-BC-%')
+            ->orderBy('registry_number', 'desc')
+            ->value('registry_number');
+
+        if ($lastRegistryNumber && preg_match('/(\d{4})$/', $lastRegistryNumber, $matches)) {
+            $nextNumber = ((int) $matches[1]) + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
         return $year . '-BC-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
     }
 }

@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'twilio' => [
+        'sid' => env('TWILIO_ACCOUNT_SID'),
+        'token' => env('TWILIO_AUTH_TOKEN'),
+        'from' => env('TWILIO_FROM_NUMBER', env('TWILIO_FROM', null)),
+        'simulate' => env('SMS_SIMULATE', true),
+    ],
+
 ];

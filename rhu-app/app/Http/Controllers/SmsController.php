@@ -14,17 +14,29 @@ class SmsController extends Controller
             'message' => 'required|string|max:1600'
         ]);
 
-        $sid = env('TWILIO_ACCOUNT_SID');
-        $token = env('TWILIO_AUTH_TOKEN');
-        $from = '+17406406628'; // Twilio number
+        $twilio = config('services.twilio', []);
 
-        // Check if Twilio credentials are configured
-        if (!$sid || !$token) {
-            return back()->with('error', 'SMS service not configured properly.');
-        }
+        $sid = $twilio['sid'] ?? env('TWILIO_ACCOUNT_SID');
+        $token = $twilio['token'] ?? env('TWILIO_AUTH_TOKEN');
+        $from = $twilio['from'] ?? env('TWILIO_FROM_NUMBER') ?? env('TWILIO_FROM') ?? '+15005550006';
+        $simulate = filter_var($twilio['simulate'] ?? env('SMS_SIMULATE', true), FILTER_VALIDATE_BOOLEAN);
 
         $to = $request->input('contact_number');
         $body = $request->input('message');
+
+        if ($simulate) {
+            \Log::info('SMS simulated send', [
+                'to' => $to,
+                'from' => $from,
+                'message' => $body,
+            ]);
+
+            return back()->with('success', 'Message queued (simulation mode).');
+        }
+
+        if (!$sid || !$token || !$from) {
+            return back()->with('error', 'SMS service not configured properly. Please set TWILIO_* variables or enable SMS simulation.');
+        }
 
         $url = "https://api.twilio.com/2010-04-01/Accounts/{$sid}/Messages.json";
 
@@ -55,13 +67,12 @@ class SmsController extends Controller
 
         curl_close($ch);
 
-        // Check if the request was successful
         if ($httpCode >= 200 && $httpCode < 300) {
             \Log::info('SMS sent successfully to: ' . $to);
             return back()->with('success', 'Message sent successfully!');
-        } else {
-            \Log::error('SMS API Error: HTTP ' . $httpCode . ' - ' . $response);
-            return back()->with('error', 'Failed to send SMS. Please check the phone number and try again.');
         }
+
+        \Log::error('SMS API Error: HTTP ' . $httpCode . ' - ' . $response);
+        return back()->with('error', 'Failed to send SMS. Please check the phone number and try again.');
     }
 }
